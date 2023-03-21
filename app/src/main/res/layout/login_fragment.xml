@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/login_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fromvpn_panels_background_colors">
+
+        <TextView
+            android:id="@+id/login_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_label_text"
+            android:textColor="@color/fromvpn_main_color"
+            android:textSize="50sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.487"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.262" />
+
+        <ImageView
+            android:id="@+id/fromvpn_logo"
+            android:layout_width="188dp"
+            android:layout_height="160dp"
+            android:contentDescription="@string/logo_label_description"
+            android:orientation="vertical"
+            android:src="@mipmap/fromvpn_logo_icon"
+            app:layout_constraintBottom_toTopOf="@+id/login_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.711" />
+
+        <LinearLayout
+            android:id="@+id/login_data_fields"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="250dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_label">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_field_template"
+                style="@style/text_input_layout_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/user_field"
+                    android:layout_width="250dp"
+                    android:layout_height="55dp"
+                    android:hint="@string/user_field_text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/address_field_template"
+                style="@style/text_input_layout_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/address_field"
+                    android:layout_width="250dp"
+                    android:layout_height="55dp"
+                    android:hint="@string/address_field_text"
+                    android:inputType="number"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_field_template"
+                style="@style/text_input_layout_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password_field"
+                    android:layout_width="250dp"
+                    android:layout_height="55dp"
+                    android:hint="@string/password_field_text"
+                    android:inputType="textPassword"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/fromvpn_secondary_background_color"
+            android:text="@string/login_button_text"
+            android:textColor="@color/fromvpn_main_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_data_fields"
+            app:strokeColor="@color/fromvpn_main_color"
+            app:strokeWidth="2dp"
+            android:layout_marginTop="20dp">
+
+        </com.google.android.material.button.MaterialButton>
+
+        <TextView
+            android:id="@+id/error_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/login_data_fields"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_label"
+            tools:text="request error"
+            android:textColor="@color/fromvpn_error_color" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

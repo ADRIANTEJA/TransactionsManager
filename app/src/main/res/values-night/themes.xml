@@ -1,0 +1,26 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.TransactionsManager" parent="@style/Theme.MaterialComponents.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/fromvpn_main_font_color</item>
+        <item name="colorPrimaryVariant">@color/fromvpn_panels_background_colors</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/fromvpn_panels_background_colors</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="text_input_layout_style" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/input_field_color_selector</item>
+        <item name="boxStrokeErrorColor">@color/fromvpn_error_color</item>
+    </style>
+
+    <style name="edit_text_text_input_style" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/fromvpn_main_font_color</item>
+    </style>
+
+</resources>
