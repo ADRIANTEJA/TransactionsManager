@@ -9,12 +9,15 @@ interface TransactionDAO
     @Query("SELECT * FROM TransactionEntity")
     fun getAllTransactions() : MutableList<TransactionEntity>
 
+    @Query("DELETE FROM TransactionEntity")
+    fun deleteAll()
+
     @Insert
-    fun addTransactions(transactionEntity: TransactionEntity)
+    fun addTransaction(transactionEntity: TransactionEntity)
 
     @Update
-    fun updateTransactions(transactionEntity: TransactionEntity)
+    fun updateTransaction(transactionEntity: TransactionEntity)
 
     @Delete
-    fun removeTransactions(transactionEntity: TransactionEntity)
+    fun removeTransaction(transactionEntity: TransactionEntity)
 }

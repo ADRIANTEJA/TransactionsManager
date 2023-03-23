@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.example.transactionsmanager.app-mergeDebugResources-76:/layout/fragment_transactions_list.xml",
+        "source": "com.example.transactionsmanager.app-main-79:/layout/fragment_transactions_list.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-mergeDebugResources-76:/layout/transaction_item.xml",
+        "source": "com.example.transactionsmanager.app-main-79:/layout/transaction_item.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-mergeDebugResources-76:/layout/login_fragment.xml",
+        "source": "com.example.transactionsmanager.app-main-79:/layout/login_fragment.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-mergeDebugResources-76:/layout/activity_main.xml",
+        "source": "com.example.transactionsmanager.app-main-79:/layout/activity_main.xml"
+    }
+]

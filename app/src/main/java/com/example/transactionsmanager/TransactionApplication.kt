@@ -9,13 +9,14 @@ import com.example.transactionsmanager.common.entities.TransactionEntity
 import com.example.transactionsmanager.common.utils.Constants
 import com.example.transactionsmanager.common.utils.ErrorNames
 import java.util.*
+import kotlin.concurrent.thread
 
 class TransactionApplication : Application()
 {
     companion object
     {
         lateinit var database: TransactionDatabase
-        var actualDate = Calendar.getInstance(TimeZone.getTimeZone("America/Havana")) //this in miliseconds since 1994
+        val actualDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Havana")) //this in miliseconds since 1994
 
         //this function filters the incoming sms so if it isn't from Transfermovil or not the kind of sms desired be ignored
         fun filterSMS(sms: SmsMessage): String
@@ -33,9 +34,9 @@ class TransactionApplication : Application()
         }
 
         //this function recieves the filterSMS function and process or ignores the sms in base to filterSMS return value
-        fun processSMS(sms: SmsMessage, filterResult: String): TransactionEntity
+        fun processSMS(sms: SmsMessage, filterResult: String): TransactionEntity?
         {
-            var transaction = TransactionEntity(1, null, 1, 0.0, null, null)
+            val transaction = TransactionEntity(1, null, 1, 0.0, null, null)
 
             when (filterResult)
             {
@@ -45,22 +46,9 @@ class TransactionApplication : Application()
                 }
                 "second type" ->
                 {
-                    transaction.apply()
-                    {
-                        beneficiary = sms.displayMessageBody.subSequence(81, 97).toString().toLong()
-                        phoneNumber = sms.displayMessageBody.subSequence(24, 34).toString().toInt()
-                        date = actualDate.time.time
-
-                        for (i in 101 until sms.displayMessageBody.length)
-                        {
-                            if (sms.displayMessageBody[i].toString() == "")
-                            {
-                                amount = sms.displayMessageBody.subSequence(101, i).toString().toDouble()
-                                break
-                            }
-                        }
-                    }
+                    processSecondType(transaction, sms)
                 }
+                else -> return null
             }
             return transaction
         }
@@ -93,7 +81,7 @@ class TransactionApplication : Application()
                                                   ErrorNames.SMS_STRUCTURE_CHANGED,
                                                   sms.originatingAddress.toString() )
 
-                database.errorDAO().addError(error)
+                thread { database.errorDAO().addError(error) }
             }
             catch (e: java.lang.IndexOutOfBoundsException)
             {
@@ -102,22 +90,57 @@ class TransactionApplication : Application()
                                                   actualDate.time.toString(),
                                                   ErrorNames.SMS_STRUCTURE_CHANGED,
                                                   sms.originatingAddress.toString() )
-
-                database.errorDAO().addError(error)
+                thread { database.errorDAO().addError(error) }
             }
         }
 
+        private fun processSecondType(transaction: TransactionEntity, sms: SmsMessage)
+        {
+            try
+            {
+                transaction.apply()// the error is number format exception
+                {
+                    beneficiary = sms.displayMessageBody.subSequence(81, 97).toString().toLong()
+                    phoneNumber = sms.displayMessageBody.subSequence(24, 34).toString().toInt()
+                    date = actualDate.time.time
+
+                    for (i in 101 until sms.displayMessageBody.length)
+                    {
+                        if (sms.displayMessageBody[i].toString() == "")
+                        {
+                            amount = sms.displayMessageBody.subSequence(101, i).toString().toDouble()
+                            break
+                        }
+                    }
+                }
+            }
+            catch (e: java.lang.NumberFormatException)
+            {
+                val error = ErrorEntity("sms structure changed",
+                    "TransactionApplication.processFirstType",
+                    actualDate.time.toString(),
+                    ErrorNames.SMS_STRUCTURE_CHANGED,
+                    sms.originatingAddress.toString() )
+
+                thread { database.errorDAO().addError(error) }
+            }
+            catch (e: java.lang.IndexOutOfBoundsException)
+            {
+                val error = ErrorEntity("sms structure changed",
+                    "TransactionApplication.processFirstType",
+                    actualDate.time.toString(),
+                    ErrorNames.SMS_STRUCTURE_CHANGED,
+                    sms.originatingAddress.toString() )
+
+                thread { database.errorDAO().addError(error) }
+            }
+        }
 
     }
-
     override fun onCreate()
     {
         super.onCreate()
 
         database = Room.databaseBuilder(this, TransactionDatabase::class.java, "TransactionDatabase").build()
     }
-
-    // remenber to implemet some validation functions for erros and build up the error log stuff(in the companion object)
-
-
 }

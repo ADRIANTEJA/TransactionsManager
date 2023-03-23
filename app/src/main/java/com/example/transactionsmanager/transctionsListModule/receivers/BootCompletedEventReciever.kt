@@ -11,12 +11,13 @@ import android.os.IBinder
 import android.provider.Telephony
 import androidx.core.app.NotificationCompat
 import com.example.transactionsmanager.R
+import com.example.transactionsmanager.TransactionApplication
 
 class BootCompletedEventReciever : BroadcastReceiver()
 {
     companion object
     {
-        private fun makeNotification(string: String, context: Context)
+        private fun makeNotification(string: String, context: Context)// this is not needed remember to delete on launch
         {
             val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -31,7 +32,7 @@ class BootCompletedEventReciever : BroadcastReceiver()
             notificationManager.notify(1234, notificationBuilder.build())
         }
     }
-
+    // this gets the incoming sms, process and storages them in the database
     class SMSReaderService : Service()
     {
 
@@ -41,14 +42,18 @@ class BootCompletedEventReciever : BroadcastReceiver()
             {
                 if (!intent?.action.equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) return
                 val extractMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
-                extractMessages.forEach { smsMessage -> makeNotification(smsMessage.displayMessageBody, applicationContext)
-                    println(smsMessage.displayMessageBody)}
+                extractMessages.forEach { smsMessage ->
+                    makeNotification(smsMessage.displayMessageBody, applicationContext)
+                    if (TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage)) != null)
+                    {
+                        TransactionApplication.database.transactionDAO().addTransaction(TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage))!!)
+                    }
+                    }
             }
         }
-
+        // this makes sure the reciever is always working in the background even after device reboots
         override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int
         {
-            println("test")
             val broadCastReceiver = SMSReciever()
             val notificationManager: NotificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val notificationChannel = NotificationChannel("test1", "test2", NotificationManager.IMPORTANCE_DEFAULT)

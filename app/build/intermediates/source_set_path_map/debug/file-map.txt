@@ -1,0 +1,80 @@
+com.example.transactionsmanager.app-lifecycle-viewmodel-2.6.0-0 C:\Users\adria\.gradle\caches\transforms-3\07d95cc7723014f9d6322cfb9e9965fa\transformed\lifecycle-viewmodel-2.6.0\res
+com.example.transactionsmanager.app-annotation-experimental-1.3.0-1 C:\Users\adria\.gradle\caches\transforms-3\0b1f54efd7a41642f569246abf44eecf\transformed\annotation-experimental-1.3.0\res
+com.example.transactionsmanager.app-sqlite-2.3.0-2 C:\Users\adria\.gradle\caches\transforms-3\138eafd3de5d8f0e6dfdfc8b19f03565\transformed\sqlite-2.3.0\res
+com.example.transactionsmanager.app-animation-1.0.1-3 C:\Users\adria\.gradle\caches\transforms-3\13cc870ef185840bf83914efc099e01c\transformed\animation-1.0.1\res
+com.example.transactionsmanager.app-viewpager2-1.0.0-4 C:\Users\adria\.gradle\caches\transforms-3\1427c95ab147e5fd6d861d4386c4f28c\transformed\viewpager2-1.0.0\res
+com.example.transactionsmanager.app-fragment-1.5.5-5 C:\Users\adria\.gradle\caches\transforms-3\1552647bddbe28093a87403e0d356200\transformed\fragment-1.5.5\res
+com.example.transactionsmanager.app-transition-1.4.1-6 C:\Users\adria\.gradle\caches\transforms-3\163d40684f4748236ebf87ba4dc91624\transformed\transition-1.4.1\res
+com.example.transactionsmanager.app-ui-1.0.1-7 C:\Users\adria\.gradle\caches\transforms-3\1fd28d3a0441a45ef61575e9c4180426\transformed\ui-1.0.1\res
+com.example.transactionsmanager.app-emoji2-views-helper-1.2.0-8 C:\Users\adria\.gradle\caches\transforms-3\20f728437d4b0f63aa77066cc53dde35\transformed\emoji2-views-helper-1.2.0\res
+com.example.transactionsmanager.app-navigation-testing-2.5.3-9 C:\Users\adria\.gradle\caches\transforms-3\260503e6bf8f65b3b81a3fb4f7e5cc1f\transformed\navigation-testing-2.5.3\res
+com.example.transactionsmanager.app-databinding-runtime-7.4.1-10 C:\Users\adria\.gradle\caches\transforms-3\277fb9a2c24d5844fd961530243cd7ab\transformed\databinding-runtime-7.4.1\res
+com.example.transactionsmanager.app-activity-ktx-1.6.1-11 C:\Users\adria\.gradle\caches\transforms-3\2b6c6183424e0963169b7d4cd45822d0\transformed\activity-ktx-1.6.1\res
+com.example.transactionsmanager.app-databinding-adapters-7.4.1-12 C:\Users\adria\.gradle\caches\transforms-3\2e00c7f7fa2a2055a890afd78e1c31db\transformed\databinding-adapters-7.4.1\res
+com.example.transactionsmanager.app-lifecycle-runtime-2.6.0-13 C:\Users\adria\.gradle\caches\transforms-3\2f626b6d28634119cb770bc2f643b14b\transformed\lifecycle-runtime-2.6.0\res
+com.example.transactionsmanager.app-runtime-1.0.1-14 C:\Users\adria\.gradle\caches\transforms-3\32429176c5045389729fbeccd5e55f3a\transformed\runtime-1.0.1\res
+com.example.transactionsmanager.app-appcompat-resources-1.6.1-15 C:\Users\adria\.gradle\caches\transforms-3\38ec549b43ceed3bdd1b67e83d955066\transformed\appcompat-resources-1.6.1\res
+com.example.transactionsmanager.app-lifecycle-livedata-2.6.0-16 C:\Users\adria\.gradle\caches\transforms-3\3a4d93c6bd83eb6cdd9932829798238c\transformed\lifecycle-livedata-2.6.0\res
+com.example.transactionsmanager.app-window-1.0.0-17 C:\Users\adria\.gradle\caches\transforms-3\3cf045d40ea9f3d8fb4b4ffd4f44705b\transformed\window-1.0.0\res
+com.example.transactionsmanager.app-navigation-common-2.5.3-18 C:\Users\adria\.gradle\caches\transforms-3\3fc5df266c2ab754651dcc5af47d3273\transformed\navigation-common-2.5.3\res
+com.example.transactionsmanager.app-runtime-saveable-1.0.1-19 C:\Users\adria\.gradle\caches\transforms-3\4553c426d8e22a8bc4f015f7b874742a\transformed\runtime-saveable-1.0.1\res
+com.example.transactionsmanager.app-navigation-fragment-2.5.3-20 C:\Users\adria\.gradle\caches\transforms-3\47dbfb1ea517cfc151768e8f8240db5e\transformed\navigation-fragment-2.5.3\res
+com.example.transactionsmanager.app-sqlite-framework-2.3.0-21 C:\Users\adria\.gradle\caches\transforms-3\523d0d129b9ba503967e402b1b2e1835\transformed\sqlite-framework-2.3.0\res
+com.example.transactionsmanager.app-core-1.9.0-22 C:\Users\adria\.gradle\caches\transforms-3\55a466cd1e0226a84be1e191cae19384\transformed\core-1.9.0\res
+com.example.transactionsmanager.app-lifecycle-livedata-core-2.6.0-23 C:\Users\adria\.gradle\caches\transforms-3\6868508c0a01fcb9ed80ccba2274c73b\transformed\lifecycle-livedata-core-2.6.0\res
+com.example.transactionsmanager.app-savedstate-ktx-1.2.0-24 C:\Users\adria\.gradle\caches\transforms-3\69f7db39a93d93601af820312d189938\transformed\savedstate-ktx-1.2.0\res
+com.example.transactionsmanager.app-lifecycle-service-2.6.0-25 C:\Users\adria\.gradle\caches\transforms-3\6ba763d548ef502b18396ebeb34b6ffa\transformed\lifecycle-service-2.6.0\res
+com.example.transactionsmanager.app-emoji2-1.2.0-26 C:\Users\adria\.gradle\caches\transforms-3\6ed3b119724a6031059888e99931ed59\transformed\emoji2-1.2.0\res
+com.example.transactionsmanager.app-lifecycle-process-2.6.0-27 C:\Users\adria\.gradle\caches\transforms-3\72f6a0d478ad205d4850319c17e8cd11\transformed\lifecycle-process-2.6.0\res
+com.example.transactionsmanager.app-cardview-1.0.0-28 C:\Users\adria\.gradle\caches\transforms-3\7439b5e0e955ad62e34ff0d67ba56d50\transformed\cardview-1.0.0\res
+com.example.transactionsmanager.app-material-1.8.0-29 C:\Users\adria\.gradle\caches\transforms-3\79e97372552a1e3857cbdb9868641817\transformed\material-1.8.0\res
+com.example.transactionsmanager.app-ui-unit-1.0.1-30 C:\Users\adria\.gradle\caches\transforms-3\7c783f07901fe370fe8f3719b4f544bb\transformed\ui-unit-1.0.1\res
+com.example.transactionsmanager.app-navigation-dynamic-features-runtime-2.5.3-31 C:\Users\adria\.gradle\caches\transforms-3\803cd9e931fe2967ab14a3797d54c8cc\transformed\navigation-dynamic-features-runtime-2.5.3\res
+com.example.transactionsmanager.app-navigation-runtime-ktx-2.5.3-32 C:\Users\adria\.gradle\caches\transforms-3\804b66797872b88b69fe0fbf5ede7753\transformed\navigation-runtime-ktx-2.5.3\res
+com.example.transactionsmanager.app-core-1.10.3-33 C:\Users\adria\.gradle\caches\transforms-3\814291b1da23bdb9bb49452aadc2dfee\transformed\core-1.10.3\res
+com.example.transactionsmanager.app-navigation-runtime-2.5.3-34 C:\Users\adria\.gradle\caches\transforms-3\82b6dbf1aa62436eb0af3467bbc22a9b\transformed\navigation-runtime-2.5.3\res
+com.example.transactionsmanager.app-coordinatorlayout-1.1.0-35 C:\Users\adria\.gradle\caches\transforms-3\835e90434ea705c6fcaee633fd6523a3\transformed\coordinatorlayout-1.1.0\res
+com.example.transactionsmanager.app-glide-4.15.0-36 C:\Users\adria\.gradle\caches\transforms-3\8670e374ac1ea62e2be04540268f06f6\transformed\glide-4.15.0\res
+com.example.transactionsmanager.app-lifecycle-viewmodel-compose-2.6.0-37 C:\Users\adria\.gradle\caches\transforms-3\877e0de944f65c0879ac2f2c4df1839d\transformed\lifecycle-viewmodel-compose-2.6.0\res
+com.example.transactionsmanager.app-foundation-layout-1.0.1-38 C:\Users\adria\.gradle\caches\transforms-3\8a73e1bd35670c2cd147b4fa413960d6\transformed\foundation-layout-1.0.1\res
+com.example.transactionsmanager.app-room-runtime-2.5.0-39 C:\Users\adria\.gradle\caches\transforms-3\8c1ec7dcdbdb6ba9b6bf0439c1ff7955\transformed\room-runtime-2.5.0\res
+com.example.transactionsmanager.app-navigation-ui-2.5.3-40 C:\Users\adria\.gradle\caches\transforms-3\8c9b19fa10868c7236e6afcde5141852\transformed\navigation-ui-2.5.3\res
+com.example.transactionsmanager.app-lifecycle-runtime-ktx-2.6.0-41 C:\Users\adria\.gradle\caches\transforms-3\8dc1579c44b1e73c228fd2c48190c9eb\transformed\lifecycle-runtime-ktx-2.6.0\res
+com.example.transactionsmanager.app-slidingpanelayout-1.2.0-42 C:\Users\adria\.gradle\caches\transforms-3\9d2b69154a17d2ceb57fc703fe484b71\transformed\slidingpanelayout-1.2.0\res
+com.example.transactionsmanager.app-lifecycle-livedata-core-ktx-2.6.0-43 C:\Users\adria\.gradle\caches\transforms-3\a39a9df3070aa9220c7ff8b5dd6f7bda\transformed\lifecycle-livedata-core-ktx-2.6.0\res
+com.example.transactionsmanager.app-navigation-dynamic-features-fragment-2.5.3-44 C:\Users\adria\.gradle\caches\transforms-3\a87e918710d8e7f6c5390ba780e7e07e\transformed\navigation-dynamic-features-fragment-2.5.3\res
+com.example.transactionsmanager.app-work-runtime-ktx-2.8.0-45 C:\Users\adria\.gradle\caches\transforms-3\ac6e850980fc48f7ac5a46c01234b3e9\transformed\work-runtime-ktx-2.8.0\res
+com.example.transactionsmanager.app-lifecycle-viewmodel-ktx-2.6.0-46 C:\Users\adria\.gradle\caches\transforms-3\b1c38f4a0aa991027abf5bae5e2dfb29\transformed\lifecycle-viewmodel-ktx-2.6.0\res
+com.example.transactionsmanager.app-navigation-compose-2.5.3-47 C:\Users\adria\.gradle\caches\transforms-3\b3b342598bfccfbfe54a8e9a12854863\transformed\navigation-compose-2.5.3\res
+com.example.transactionsmanager.app-fragment-ktx-1.5.5-48 C:\Users\adria\.gradle\caches\transforms-3\b5a7dcccca77c43943e97d0eb4436755\transformed\fragment-ktx-1.5.5\res
+com.example.transactionsmanager.app-ui-util-1.0.1-49 C:\Users\adria\.gradle\caches\transforms-3\b8009f5eec14420d75f99db8affd0d57\transformed\ui-util-1.0.1\res
+com.example.transactionsmanager.app-profileinstaller-1.2.1-50 C:\Users\adria\.gradle\caches\transforms-3\b893ce1930c9858808d162e5d92e9ba8\transformed\profileinstaller-1.2.1\res
+com.example.transactionsmanager.app-activity-compose-1.5.1-51 C:\Users\adria\.gradle\caches\transforms-3\c14572b34e1ed94c0f56f61aebc20899\transformed\activity-compose-1.5.1\res
+com.example.transactionsmanager.app-lifecycle-viewmodel-savedstate-2.6.0-52 C:\Users\adria\.gradle\caches\transforms-3\c625cde94082020702b242d951c4132f\transformed\lifecycle-viewmodel-savedstate-2.6.0\res
+com.example.transactionsmanager.app-lifecycle-livedata-ktx-2.6.0-53 C:\Users\adria\.gradle\caches\transforms-3\cce020ff26a6c7ca33caf8f69fdb92dd\transformed\lifecycle-livedata-ktx-2.6.0\res
+com.example.transactionsmanager.app-lifecycle-runtime-testing-2.6.0-54 C:\Users\adria\.gradle\caches\transforms-3\d17a36ed777656b59cd5b750b89c520e\transformed\lifecycle-runtime-testing-2.6.0\res
+com.example.transactionsmanager.app-startup-runtime-1.1.1-55 C:\Users\adria\.gradle\caches\transforms-3\d48c7fa7fd28c606b7f5f5b8cc54d000\transformed\startup-runtime-1.1.1\res
+com.example.transactionsmanager.app-constraintlayout-2.1.4-56 C:\Users\adria\.gradle\caches\transforms-3\d74a01a7c3cb435ca8625f16311fd7ef\transformed\constraintlayout-2.1.4\res
+com.example.transactionsmanager.app-navigation-common-ktx-2.5.3-57 C:\Users\adria\.gradle\caches\transforms-3\dbb48e51b05166c7b565a79754b65109\transformed\navigation-common-ktx-2.5.3\res
+com.example.transactionsmanager.app-navigation-fragment-ktx-2.5.3-58 C:\Users\adria\.gradle\caches\transforms-3\dc41dc5e7c75f6d64b34f64647613023\transformed\navigation-fragment-ktx-2.5.3\res
+com.example.transactionsmanager.app-ui-text-1.0.1-59 C:\Users\adria\.gradle\caches\transforms-3\dda9c7486560044ef1102caaa552f831\transformed\ui-text-1.0.1\res
+com.example.transactionsmanager.app-ui-graphics-1.0.1-60 C:\Users\adria\.gradle\caches\transforms-3\e2d3141dd683c153c799750dca8ffc9d\transformed\ui-graphics-1.0.1\res
+com.example.transactionsmanager.app-work-runtime-2.8.0-61 C:\Users\adria\.gradle\caches\transforms-3\e5497fb46190a3fb8ddd2af04092493d\transformed\work-runtime-2.8.0\res
+com.example.transactionsmanager.app-activity-1.6.1-62 C:\Users\adria\.gradle\caches\transforms-3\e6667579fca0b4fea671638df7aa9aa2\transformed\activity-1.6.1\res
+com.example.transactionsmanager.app-drawerlayout-1.1.1-63 C:\Users\adria\.gradle\caches\transforms-3\e679b79488ba38b2a636c2717fa6bc4f\transformed\drawerlayout-1.1.1\res
+com.example.transactionsmanager.app-core-ktx-1.9.0-64 C:\Users\adria\.gradle\caches\transforms-3\ea8b8ba96dba42feb91ca6bb907682bd\transformed\core-ktx-1.9.0\res
+com.example.transactionsmanager.app-recyclerview-1.1.0-65 C:\Users\adria\.gradle\caches\transforms-3\ec401f261d9558dc52886ac8a326afad\transformed\recyclerview-1.1.0\res
+com.example.transactionsmanager.app-savedstate-1.2.0-66 C:\Users\adria\.gradle\caches\transforms-3\ec433bee99eef7fe5cf1520a057e62c2\transformed\savedstate-1.2.0\res
+com.example.transactionsmanager.app-ui-geometry-1.0.1-67 C:\Users\adria\.gradle\caches\transforms-3\ed27cd01c86197c607558d91785db09a\transformed\ui-geometry-1.0.1\res
+com.example.transactionsmanager.app-navigation-ui-ktx-2.5.3-68 C:\Users\adria\.gradle\caches\transforms-3\ee047d52a611ac9e51bcca94792cd0be\transformed\navigation-ui-ktx-2.5.3\res
+com.example.transactionsmanager.app-animation-core-1.0.1-69 C:\Users\adria\.gradle\caches\transforms-3\f2d834d43d062b06e693597a5248eb98\transformed\animation-core-1.0.1\res
+com.example.transactionsmanager.app-core-runtime-2.2.0-70 C:\Users\adria\.gradle\caches\transforms-3\f4b8452426a1d9bfec3157b80cb97b03\transformed\core-runtime-2.2.0\res
+com.example.transactionsmanager.app-appcompat-1.6.1-71 C:\Users\adria\.gradle\caches\transforms-3\f8e0f62d7386dfb0874134ecf5106b6a\transformed\appcompat-1.6.1\res
+com.example.transactionsmanager.app-pngs-72 D:\PC restore\AndroidStudioProjects\TransactionsManager\app\build\generated\res\pngs\debug
+com.example.transactionsmanager.app-resValues-73 D:\PC restore\AndroidStudioProjects\TransactionsManager\app\build\generated\res\resValues\debug
+com.example.transactionsmanager.app-rs-74 D:\PC restore\AndroidStudioProjects\TransactionsManager\app\build\generated\res\rs\debug
+com.example.transactionsmanager.app-packageDebugResources-75 D:\PC restore\AndroidStudioProjects\TransactionsManager\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.transactionsmanager.app-packageDebugResources-76 D:\PC restore\AndroidStudioProjects\TransactionsManager\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.transactionsmanager.app-merged_res-77 D:\PC restore\AndroidStudioProjects\TransactionsManager\app\build\intermediates\merged_res\debug
+com.example.transactionsmanager.app-debug-78 D:\PC restore\AndroidStudioProjects\TransactionsManager\app\src\debug\res
+com.example.transactionsmanager.app-main-79 D:\PC restore\AndroidStudioProjects\TransactionsManager\app\src\main\res

@@ -12,8 +12,14 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
+import com.example.transactionsmanager.TransactionApplication
+import com.example.transactionsmanager.common.entities.ErrorEntity
+import com.example.transactionsmanager.common.entities.TransactionEntity
 import com.example.transactionsmanager.databinding.ActivityMainBinding
 import com.example.transactionsmanager.transctionsListModule.receivers.BootCompletedEventReciever
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.concurrent.thread
 
 open class MainActivity : AppCompatActivity()
 {
@@ -41,11 +47,19 @@ open class MainActivity : AppCompatActivity()
         val intent = Intent(this, BootCompletedEventReciever.SMSReaderService::class.java)
         startService(intent)
 
-        val test = "El titular del telefono 5358137588 le ha realizado una transferencia a la cuenta 9224069994689855 de 200.00 CUP. Nro. Transaccion"
+        val date = TransactionApplication.actualDate.time
+        val dateFormat = SimpleDateFormat("dd/MM/yy h:m a", Locale.US)
+        val formattedDate = dateFormat.format(date)
+        println(formattedDate)
+
+        val test = TransactionEntity(213, "awdawd", 213, 1231.0, null, null)
+        Thread { TransactionApplication.database.transactionDAO().addTransaction(test)
+        println(TransactionApplication.database.transactionDAO().getAllTransactions())}// test the data base and learn github dammit
 
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
     }
+
 
     fun hideKeyboard(context: Context, view: View)
     {

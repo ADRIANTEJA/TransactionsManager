@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.transactionsmanager.loginModule.model.retrofit.LoginService
 import com.example.transactionsmanager.R
+import com.example.transactionsmanager.TransactionApplication
 import com.example.transactionsmanager.databinding.LoginFragmentBinding
 import com.example.transactionsmanager.loginModule.model.Constants
 import com.example.transactionsmanager.loginModule.model.retrofit.LoginResponse
@@ -39,6 +41,7 @@ class LoginFragment: Fragment()
         super.onViewCreated(view, savedInstanceState)
         //val loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
         _loginBinding.loginButton.setOnClickListener { login(view) }
+
         //here remenber to implement the condition login automatically provided the token sent to the server is right or else call login funtion again
     }
 

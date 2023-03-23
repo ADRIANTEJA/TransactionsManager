@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-    id "androidx.navigation.safeargs.kotlin"
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -48,6 +48,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.6.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.0"
     implementation "androidx.work:work-runtime-ktx:2.8.0"
+    //implementation "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3"
 
     //nav component
     implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
@@ -67,7 +68,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.15.0'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
-    kapt 'com.github.bumptech.glide:compiler:4.15.0'
+    kapt 'com.github.bumptech.glide:compiler:4.15.1'
 
     //Room
     implementation "androidx.room:room-runtime:2.5.0"

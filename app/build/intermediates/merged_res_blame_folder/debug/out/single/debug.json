@@ -1,0 +1,226 @@
+[
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-xxhdpi_in_bar_and_tab_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-xxhdpi/in_bar_and_tab_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-xxxhdpi_fromvpn_notification_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-xxxhdpi/fromvpn_notification_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-mdpi_ic_no_connection.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-mdpi/ic_no_connection.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-hdpi_fromvpn_notification_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-hdpi/fromvpn_notification_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxxhdpi_fromvpn_logo_and_icon_round.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxxhdpi/fromvpn_logo_and_icon_round.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxxhdpi_fromvpn_logo_and_icon_foreground.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxxhdpi/fromvpn_logo_and_icon_foreground.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/layout_fragment_transactions_list.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/layout/fragment_transactions_list.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-xhdpi_fromvpn_notification_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-xhdpi/fromvpn_notification_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-mdpi_fromvpn_logo_and_icon_foreground.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-mdpi/fromvpn_logo_and_icon_foreground.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/layout_transaction_item.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/layout/transaction_item.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-xxhdpi_ic_no_connection.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-xxhdpi/ic_no_connection.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-hdpi_fromvpn_logo_and_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-hdpi/fromvpn_logo_and_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxxhdpi_fromvpn_logo_and_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxxhdpi/fromvpn_logo_and_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxhdpi_fromvpn_logo_and_icon_foreground.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxhdpi/fromvpn_logo_and_icon_foreground.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-mdpi_fromvpn_logo_and_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-mdpi/fromvpn_logo_and_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-mdpi_in_bar_and_tab_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-mdpi/in_bar_and_tab_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/xml_backup_rules.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-hdpi_ic_no_connection.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-hdpi/ic_no_connection.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/layout_activity_main.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xhdpi_fromvpn_logo_and_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xhdpi/fromvpn_logo_and_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-xxhdpi_fromvpn_notification_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-xxhdpi/fromvpn_notification_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-xxxhdpi_in_bar_and_tab_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-xxxhdpi/in_bar_and_tab_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/color_input_field_color_selector.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/color/input_field_color_selector.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-anydpi-v26_fromvpn_logo_and_icon.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-anydpi-v26/fromvpn_logo_and_icon.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxhdpi_fromvpn_logo_and_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxhdpi/fromvpn_logo_and_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-xhdpi_ic_no_connection.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-xhdpi/ic_no_connection.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-mdpi_fromvpn_notification_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-mdpi/fromvpn_notification_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/navigation_nav_graph.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/navigation/nav_graph.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/layout_login_fragment.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/layout/login_fragment.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-mdpi_fromvpn_logo_and_icon_round.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-mdpi/fromvpn_logo_and_icon_round.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-anydpi_ic_no_connection.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-anydpi/ic_no_connection.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-xhdpi_in_bar_and_tab_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-xhdpi/in_bar_and_tab_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xxhdpi_fromvpn_logo_and_icon_round.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xxhdpi/fromvpn_logo_and_icon_round.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-hdpi_fromvpn_logo_and_icon_round.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-hdpi/fromvpn_logo_and_icon_round.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xhdpi_fromvpn_logo_and_icon_round.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xhdpi/fromvpn_logo_and_icon_round.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/color_input_field_on_error_color_selector.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/color/input_field_on_error_color_selector.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/layout_no_internet_conexion_warning_toasts.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/layout/no_internet_conexion_warning_toasts.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/xml_data_extraction_rules.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-anydpi-v26_fromvpn_logo_and_icon_round.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-anydpi-v26/fromvpn_logo_and_icon_round.xml"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-xhdpi_fromvpn_logo_and_icon_foreground.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-xhdpi/fromvpn_logo_and_icon_foreground.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/mipmap-hdpi_fromvpn_logo_and_icon_foreground.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/mipmap-hdpi/fromvpn_logo_and_icon_foreground.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-hdpi_in_bar_and_tab_icon.png.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-hdpi/in_bar_and_tab_icon.png"
+    },
+    {
+        "merged": "com.example.transactionsmanager.app-merged_res-77:/drawable-v24_ic_launcher_foreground.xml.flat",
+        "source": "com.example.transactionsmanager.app-main-79:/drawable-v24/ic_launcher_foreground.xml"
+    }
+]

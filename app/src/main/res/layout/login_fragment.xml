@@ -29,7 +29,7 @@
             android:layout_height="160dp"
             android:contentDescription="@string/logo_label_description"
             android:orientation="vertical"
-            android:src="@mipmap/fromvpn_logo_icon"
+            android:src="@mipmap/fromvpn_logo_and_icon"
             app:layout_constraintBottom_toTopOf="@+id/login_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
