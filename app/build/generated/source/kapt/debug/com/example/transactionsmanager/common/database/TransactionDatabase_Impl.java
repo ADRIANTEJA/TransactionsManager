@@ -36,13 +36,13 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
 
   @Override
   protected SupportSQLiteOpenHelper createOpenHelper(DatabaseConfiguration configuration) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(1) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(3) {
       @Override
       public void createAllTables(SupportSQLiteDatabase _db) {
-        _db.execSQL("CREATE TABLE IF NOT EXISTS `TransactionEntity` (`beneficiary` INTEGER NOT NULL, `transactionId` TEXT, `date` INTEGER NOT NULL, `amount` REAL NOT NULL, `userName` TEXT, `phoneNumber` INTEGER, PRIMARY KEY(`beneficiary`))");
-        _db.execSQL("CREATE TABLE IF NOT EXISTS `ErrorEntity` (`errorName` TEXT NOT NULL, `errorAddress` TEXT NOT NULL, `date` TEXT NOT NULL, `header` TEXT NOT NULL, `smsOrigin` TEXT NOT NULL, PRIMARY KEY(`errorName`))");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `TransactionEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `transactionId` TEXT, `beneficiary` INTEGER NOT NULL, `amount` REAL NOT NULL, `userName` TEXT, `phoneNumber` INTEGER)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `ErrorEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `errorAddress` TEXT NOT NULL, `errorName` TEXT NOT NULL, `header` TEXT NOT NULL, `smsOrigin` TEXT NOT NULL)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '96c9f620bab7bfaf38c01ac38f0b8611')");
+        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2f873ccd8feb6ece3386bd5f9e4d048e')");
       }
 
       @Override
@@ -87,10 +87,11 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
 
       @Override
       public RoomOpenHelper.ValidationResult onValidateSchema(SupportSQLiteDatabase _db) {
-        final HashMap<String, TableInfo.Column> _columnsTransactionEntity = new HashMap<String, TableInfo.Column>(6);
-        _columnsTransactionEntity.put("beneficiary", new TableInfo.Column("beneficiary", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsTransactionEntity.put("transactionId", new TableInfo.Column("transactionId", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashMap<String, TableInfo.Column> _columnsTransactionEntity = new HashMap<String, TableInfo.Column>(7);
+        _columnsTransactionEntity.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("date", new TableInfo.Column("date", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsTransactionEntity.put("transactionId", new TableInfo.Column("transactionId", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsTransactionEntity.put("beneficiary", new TableInfo.Column("beneficiary", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("amount", new TableInfo.Column("amount", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("userName", new TableInfo.Column("userName", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("phoneNumber", new TableInfo.Column("phoneNumber", "INTEGER", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
@@ -103,10 +104,11 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
                   + " Expected:\n" + _infoTransactionEntity + "\n"
                   + " Found:\n" + _existingTransactionEntity);
         }
-        final HashMap<String, TableInfo.Column> _columnsErrorEntity = new HashMap<String, TableInfo.Column>(5);
-        _columnsErrorEntity.put("errorName", new TableInfo.Column("errorName", "TEXT", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsErrorEntity.put("errorAddress", new TableInfo.Column("errorAddress", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashMap<String, TableInfo.Column> _columnsErrorEntity = new HashMap<String, TableInfo.Column>(6);
+        _columnsErrorEntity.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsErrorEntity.put("date", new TableInfo.Column("date", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsErrorEntity.put("errorAddress", new TableInfo.Column("errorAddress", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsErrorEntity.put("errorName", new TableInfo.Column("errorName", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsErrorEntity.put("header", new TableInfo.Column("header", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsErrorEntity.put("smsOrigin", new TableInfo.Column("smsOrigin", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysErrorEntity = new HashSet<TableInfo.ForeignKey>(0);
@@ -120,7 +122,7 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "96c9f620bab7bfaf38c01ac38f0b8611", "2ba4a411b67669fb033c08384cd0a0b3");
+    }, "2f873ccd8feb6ece3386bd5f9e4d048e", "f1dfddcd941edc32b7130d58d9e9189d");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
         .name(configuration.name)
         .callback(_openCallback)

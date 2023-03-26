@@ -33,51 +33,48 @@ public final class ErrorDAO_Impl implements ErrorDAO {
     this.__insertionAdapterOfErrorEntity = new EntityInsertionAdapter<ErrorEntity>(__db) {
       @Override
       public String createQuery() {
-        return "INSERT OR ABORT INTO `ErrorEntity` (`errorName`,`errorAddress`,`date`,`header`,`smsOrigin`) VALUES (?,?,?,?,?)";
+        return "INSERT OR ABORT INTO `ErrorEntity` (`id`,`date`,`errorAddress`,`errorName`,`header`,`smsOrigin`) VALUES (nullif(?, 0),?,?,?,?,?)";
       }
 
       @Override
       public void bind(SupportSQLiteStatement stmt, ErrorEntity value) {
-        if (value.getErrorName() == null) {
-          stmt.bindNull(1);
-        } else {
-          stmt.bindString(1, value.getErrorName());
-        }
-        if (value.getErrorAddress() == null) {
+        stmt.bindLong(1, value.getId());
+        if (value.getDate() == null) {
           stmt.bindNull(2);
         } else {
-          stmt.bindString(2, value.getErrorAddress());
+          stmt.bindString(2, value.getDate());
         }
-        if (value.getDate() == null) {
+        if (value.getErrorAddress() == null) {
           stmt.bindNull(3);
         } else {
-          stmt.bindString(3, value.getDate());
+          stmt.bindString(3, value.getErrorAddress());
         }
-        if (value.getHeader() == null) {
+        if (value.getErrorName() == null) {
           stmt.bindNull(4);
         } else {
-          stmt.bindString(4, value.getHeader());
+          stmt.bindString(4, value.getErrorName());
         }
-        if (value.getSmsOrigin() == null) {
+        if (value.getHeader() == null) {
           stmt.bindNull(5);
         } else {
-          stmt.bindString(5, value.getSmsOrigin());
+          stmt.bindString(5, value.getHeader());
+        }
+        if (value.getSmsOrigin() == null) {
+          stmt.bindNull(6);
+        } else {
+          stmt.bindString(6, value.getSmsOrigin());
         }
       }
     };
     this.__deletionAdapterOfErrorEntity = new EntityDeletionOrUpdateAdapter<ErrorEntity>(__db) {
       @Override
       public String createQuery() {
-        return "DELETE FROM `ErrorEntity` WHERE `errorName` = ?";
+        return "DELETE FROM `ErrorEntity` WHERE `id` = ?";
       }
 
       @Override
       public void bind(SupportSQLiteStatement stmt, ErrorEntity value) {
-        if (value.getErrorName() == null) {
-          stmt.bindNull(1);
-        } else {
-          stmt.bindString(1, value.getErrorName());
-        }
+        stmt.bindLong(1, value.getId());
       }
     };
     this.__preparedStmtOfDeleteAll = new SharedSQLiteStatement(__db) {
@@ -134,19 +131,22 @@ public final class ErrorDAO_Impl implements ErrorDAO {
     __db.assertNotSuspendingTransaction();
     final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
     try {
-      final int _cursorIndexOfErrorName = CursorUtil.getColumnIndexOrThrow(_cursor, "errorName");
-      final int _cursorIndexOfErrorAddress = CursorUtil.getColumnIndexOrThrow(_cursor, "errorAddress");
+      final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
       final int _cursorIndexOfDate = CursorUtil.getColumnIndexOrThrow(_cursor, "date");
+      final int _cursorIndexOfErrorAddress = CursorUtil.getColumnIndexOrThrow(_cursor, "errorAddress");
+      final int _cursorIndexOfErrorName = CursorUtil.getColumnIndexOrThrow(_cursor, "errorName");
       final int _cursorIndexOfHeader = CursorUtil.getColumnIndexOrThrow(_cursor, "header");
       final int _cursorIndexOfSmsOrigin = CursorUtil.getColumnIndexOrThrow(_cursor, "smsOrigin");
       final List<ErrorEntity> _result = new ArrayList<ErrorEntity>(_cursor.getCount());
       while(_cursor.moveToNext()) {
         final ErrorEntity _item;
-        final String _tmpErrorName;
-        if (_cursor.isNull(_cursorIndexOfErrorName)) {
-          _tmpErrorName = null;
+        final int _tmpId;
+        _tmpId = _cursor.getInt(_cursorIndexOfId);
+        final String _tmpDate;
+        if (_cursor.isNull(_cursorIndexOfDate)) {
+          _tmpDate = null;
         } else {
-          _tmpErrorName = _cursor.getString(_cursorIndexOfErrorName);
+          _tmpDate = _cursor.getString(_cursorIndexOfDate);
         }
         final String _tmpErrorAddress;
         if (_cursor.isNull(_cursorIndexOfErrorAddress)) {
@@ -154,11 +154,11 @@ public final class ErrorDAO_Impl implements ErrorDAO {
         } else {
           _tmpErrorAddress = _cursor.getString(_cursorIndexOfErrorAddress);
         }
-        final String _tmpDate;
-        if (_cursor.isNull(_cursorIndexOfDate)) {
-          _tmpDate = null;
+        final String _tmpErrorName;
+        if (_cursor.isNull(_cursorIndexOfErrorName)) {
+          _tmpErrorName = null;
         } else {
-          _tmpDate = _cursor.getString(_cursorIndexOfDate);
+          _tmpErrorName = _cursor.getString(_cursorIndexOfErrorName);
         }
         final String _tmpHeader;
         if (_cursor.isNull(_cursorIndexOfHeader)) {
@@ -172,7 +172,7 @@ public final class ErrorDAO_Impl implements ErrorDAO {
         } else {
           _tmpSmsOrigin = _cursor.getString(_cursorIndexOfSmsOrigin);
         }
-        _item = new ErrorEntity(_tmpErrorName,_tmpErrorAddress,_tmpDate,_tmpHeader,_tmpSmsOrigin);
+        _item = new ErrorEntity(_tmpId,_tmpDate,_tmpErrorAddress,_tmpErrorName,_tmpHeader,_tmpSmsOrigin);
         _result.add(_item);
       }
       return _result;

@@ -31,6 +31,7 @@ id address_field
 id address_field_template
 id amount_data
 id beneficiary_data
+id button2
 id check_account_button
 id data_container
 id date_data
@@ -49,6 +50,8 @@ id no_internet_warning
 id password_field
 id password_field_template
 id phone_number_data
+id resetDBButton
+id testButton
 id transaction_id_data
 id transactions_data_view
 id transactions_list

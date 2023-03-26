@@ -13,10 +13,8 @@ interface ErrorDAO
     fun deleteAll()
 
     @Insert
-    fun addError(errorEntity: ErrorEntity)
+     fun addError(errorEntity: ErrorEntity)
 
     @Delete
     fun deleteError(errorEntity: ErrorEntity)
-
-
 }

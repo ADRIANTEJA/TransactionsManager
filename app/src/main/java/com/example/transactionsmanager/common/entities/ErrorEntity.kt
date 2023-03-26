@@ -4,8 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class ErrorEntity(@PrimaryKey var errorName: String,
-                  var errorAddress: String,
-                  var date: String,
-                  var header: String,
-                  var smsOrigin: String)
+data class ErrorEntity(@PrimaryKey(autoGenerate = true) var id: Int,
+                        var date: String,
+                        var errorAddress: String,
+                        var errorName: String,
+                        var header: String,
+                        var smsOrigin: String)

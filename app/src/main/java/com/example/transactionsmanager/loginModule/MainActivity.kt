@@ -7,16 +7,21 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.example.transactionsmanager.TransactionApplication
 import com.example.transactionsmanager.common.entities.ErrorEntity
 import com.example.transactionsmanager.common.entities.TransactionEntity
 import com.example.transactionsmanager.databinding.ActivityMainBinding
 import com.example.transactionsmanager.transctionsListModule.receivers.BootCompletedEventReciever
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
@@ -47,14 +52,10 @@ open class MainActivity : AppCompatActivity()
         val intent = Intent(this, BootCompletedEventReciever.SMSReaderService::class.java)
         startService(intent)
 
-        val date = TransactionApplication.actualDate.time
+        val date = TransactionApplication.actualDate.time // this is an example of using date remove later
         val dateFormat = SimpleDateFormat("dd/MM/yy h:m a", Locale.US)
         val formattedDate = dateFormat.format(date)
         println(formattedDate)
-
-        val test = TransactionEntity(213, "awdawd", 213, 1231.0, null, null)
-        Thread { TransactionApplication.database.transactionDAO().addTransaction(test)
-        println(TransactionApplication.database.transactionDAO().getAllTransactions())}// test the data base and learn github dammit
 
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)

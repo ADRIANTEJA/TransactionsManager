@@ -9,9 +9,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.IBinder
 import android.provider.Telephony
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.transactionsmanager.R
 import com.example.transactionsmanager.TransactionApplication
+import kotlinx.coroutines.*
 
 class BootCompletedEventReciever : BroadcastReceiver()
 {
@@ -35,6 +37,7 @@ class BootCompletedEventReciever : BroadcastReceiver()
     // this gets the incoming sms, process and storages them in the database
     class SMSReaderService : Service()
     {
+        private val serviceScope = CoroutineScope(SupervisorJob())
 
         inner class SMSReciever: BroadcastReceiver()
         {
@@ -43,14 +46,21 @@ class BootCompletedEventReciever : BroadcastReceiver()
                 if (!intent?.action.equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) return
                 val extractMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
                 extractMessages.forEach { smsMessage ->
-                    makeNotification(smsMessage.displayMessageBody, applicationContext)
-                    if (TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage)) != null)
+                    makeNotification(smsMessage.displayMessageBody, applicationContext)// REMEMBER TO DELETE THIS
+                    serviceScope.launch()
                     {
-                        TransactionApplication.database.transactionDAO().addTransaction(TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage))!!)
+                        withContext(Dispatchers.IO)
+                        {
+                            if (TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage)) != null)
+                            {
+                                TransactionApplication.database.transactionDAO().addTransaction(TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage))!!)
+                            }
+                        }
                     }
-                    }
+                }
             }
         }
+
         // this makes sure the reciever is always working in the background even after device reboots
         override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int
         {
@@ -71,6 +81,12 @@ class BootCompletedEventReciever : BroadcastReceiver()
         }
 
         override fun onBind(intent: Intent?): IBinder? { return null }
+
+        override fun onDestroy()
+        {
+            super.onDestroy()
+            serviceScope.cancel()
+        }
     }
 
     override fun onReceive(context: Context?, intent: Intent?)

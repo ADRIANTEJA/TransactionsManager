@@ -3,6 +3,7 @@ package com.example.transactionsmanager.loginModule
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.transactionsmanager.loginModule.model.retrofit.LoginService
 import com.example.transactionsmanager.R
 import com.example.transactionsmanager.TransactionApplication
@@ -19,11 +21,15 @@ import com.example.transactionsmanager.loginModule.model.retrofit.LoginResponse
 import com.example.transactionsmanager.loginModule.model.retrofit.UserData
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 
 class LoginFragment: Fragment()
 {

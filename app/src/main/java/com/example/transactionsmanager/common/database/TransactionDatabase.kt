@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.example.transactionsmanager.common.entities.ErrorEntity
 import com.example.transactionsmanager.common.entities.TransactionEntity
 
-@Database(entities = [TransactionEntity::class, ErrorEntity::class], version = 1)
+@Database(entities = [TransactionEntity::class, ErrorEntity::class], version = 3)
 abstract class TransactionDatabase : RoomDatabase()
 {
     abstract fun transactionDAO() : TransactionDAO

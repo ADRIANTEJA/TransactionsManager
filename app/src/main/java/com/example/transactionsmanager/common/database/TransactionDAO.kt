@@ -16,7 +16,7 @@ interface TransactionDAO
     fun addTransaction(transactionEntity: TransactionEntity)
 
     @Update
-    fun updateTransaction(transactionEntity: TransactionEntity)
+     fun updateTransaction(transactionEntity: TransactionEntity)
 
     @Delete
     fun removeTransaction(transactionEntity: TransactionEntity)
