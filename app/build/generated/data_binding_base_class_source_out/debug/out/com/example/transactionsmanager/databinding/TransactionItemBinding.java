@@ -37,13 +37,9 @@ public abstract class TransactionItemBinding extends ViewDataBinding {
   @NonNull
   public final ConstraintLayout transactionsDataView;
 
-  @NonNull
-  public final TextView userNameData;
-
   protected TransactionItemBinding(Object _bindingComponent, View _root, int _localFieldCount,
       TextView amountData, TextView beneficiaryData, GridLayout dataContainer, TextView dateData,
-      TextView phoneNumberData, TextView transactionIdData, ConstraintLayout transactionsDataView,
-      TextView userNameData) {
+      TextView phoneNumberData, TextView transactionIdData, ConstraintLayout transactionsDataView) {
     super(_bindingComponent, _root, _localFieldCount);
     this.amountData = amountData;
     this.beneficiaryData = beneficiaryData;
@@ -52,7 +48,6 @@ public abstract class TransactionItemBinding extends ViewDataBinding {
     this.phoneNumberData = phoneNumberData;
     this.transactionIdData = transactionIdData;
     this.transactionsDataView = transactionsDataView;
-    this.userNameData = userNameData;
   }
 
   @NonNull

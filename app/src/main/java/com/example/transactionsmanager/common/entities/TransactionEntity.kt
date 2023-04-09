@@ -7,8 +7,8 @@ import java.util.Date
 @Entity (tableName = "TransactionEntity")
 data class TransactionEntity ( @PrimaryKey(autoGenerate = true) var id: Int,
                                 var date: Long,
-                                var transactionId: String? = null,
+                                var sent: Boolean = false,
+                                var transactionId: String,
                                 var beneficiary: Long,
                                 var amount: Double,
-                                var userName: String? = null,
                                 var phoneNumber: Long? = null)

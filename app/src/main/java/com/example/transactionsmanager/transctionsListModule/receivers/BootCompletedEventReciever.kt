@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.IBinder
 import android.provider.Telephony
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.transactionsmanager.R
 import com.example.transactionsmanager.TransactionApplication
@@ -37,7 +36,8 @@ class BootCompletedEventReciever : BroadcastReceiver()
     // this gets the incoming sms, process and storages them in the database
     class SMSReaderService : Service()
     {
-        private val serviceScope = CoroutineScope(SupervisorJob())
+        private val serviceScope = CoroutineScope(Job())
+        private var smsCollectorTimer = TransactionApplication.createSmsCollectorTrigger()
 
         inner class SMSReciever: BroadcastReceiver()
         {
@@ -54,6 +54,8 @@ class BootCompletedEventReciever : BroadcastReceiver()
                             if (TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage)) != null)
                             {
                                 TransactionApplication.database.transactionDAO().addTransaction(TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage))!!)
+                                smsCollectorTimer.cancel()
+                                smsCollectorTimer.start()
                             }
                         }
                     }

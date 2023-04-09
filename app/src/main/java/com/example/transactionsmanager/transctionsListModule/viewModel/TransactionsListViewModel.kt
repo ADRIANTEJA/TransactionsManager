@@ -1,48 +1,35 @@
 package com.example.transactionsmanager.transctionsListModule.viewModel
 
-import android.telephony.SmsMessage
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.transactionsmanager.common.entities.TransactionEntity
-import com.example.transactionsmanager.common.utils.Constants
+import com.example.transactionsmanager.transctionsListModule.model.TransactionRepository
 
 class TransactionsListViewModel : ViewModel()
 {
-    private var transactions: MutableLiveData<List<TransactionEntity>>
+    private var transactions: MutableLiveData<List<TransactionEntity>> = MutableLiveData()
+    private var repository: TransactionRepository = TransactionRepository()
 
-    init
-    {
-        transactions = MutableLiveData()
-        loadTransactions()
-    }
+    init { loadTransactions() }
 
     fun getTransactions(): LiveData<List<TransactionEntity>> { return transactions }
 
     private fun loadTransactions()
     {
-
-    }
-
-    /*private fun getTransactionsTest(): MutableList<Transaction>
-    {
-        transactionsTest.apply()
+        repository.getTransactionsCallback(object : TransactionRepository.TransactionsCallback
         {
-            for (i in 0 until 20)
+            override fun getTransactionsCallback(transactions: MutableList<TransactionEntity>)
             {
-                add(
-                    Transaction(Constants.accountIdHeaderText + "0000111122223333",
-                        Constants.transactionsIdHeaderText + "AY3004JQST999",
-                        Constants.dateHeaderText + "12/31/23 5:30 PM",
-                        Constants.amountHeaderText + "300 CUP")
-                )
+                this@TransactionsListViewModel.transactions.value = transactions
             }
-        }
-        return transactionsTest
+        })
     }
 
-    private fun registerTransaction()
+    override fun onCleared()
     {
-        transactionsTest.add(Transaction("12060010201002", "iahwdawhdoa", "23/03/4 5:30 PM", "400 CUP"))
-    }*/
+        super.onCleared()
+        repository.closeCoroutine()
+    }
+
 }

@@ -34,21 +34,29 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
 
   private volatile ErrorDAO _errorDAO;
 
+  private volatile CredentialsDAO _credentialsDAO;
+
+  private volatile CardDAO _cardDAO;
+
   @Override
   protected SupportSQLiteOpenHelper createOpenHelper(DatabaseConfiguration configuration) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(3) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(9) {
       @Override
       public void createAllTables(SupportSQLiteDatabase _db) {
-        _db.execSQL("CREATE TABLE IF NOT EXISTS `TransactionEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `transactionId` TEXT, `beneficiary` INTEGER NOT NULL, `amount` REAL NOT NULL, `userName` TEXT, `phoneNumber` INTEGER)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `TransactionEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `sent` INTEGER NOT NULL, `transactionId` TEXT NOT NULL, `beneficiary` INTEGER NOT NULL, `amount` REAL NOT NULL, `phoneNumber` INTEGER)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS `ErrorEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `errorAddress` TEXT NOT NULL, `errorName` TEXT NOT NULL, `header` TEXT NOT NULL, `smsOrigin` TEXT NOT NULL)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `CredentialsEntity` (`id` INTEGER NOT NULL, `userName` TEXT NOT NULL, `token` TEXT NOT NULL, `logged` INTEGER NOT NULL, `instanceId` TEXT NOT NULL, `baseUrl` TEXT NOT NULL, PRIMARY KEY(`id`))");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `CardEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cardNumber` INTEGER NOT NULL)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2f873ccd8feb6ece3386bd5f9e4d048e')");
+        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cfdaac828559fa70743a223b8746a779')");
       }
 
       @Override
       public void dropAllTables(SupportSQLiteDatabase _db) {
         _db.execSQL("DROP TABLE IF EXISTS `TransactionEntity`");
         _db.execSQL("DROP TABLE IF EXISTS `ErrorEntity`");
+        _db.execSQL("DROP TABLE IF EXISTS `CredentialsEntity`");
+        _db.execSQL("DROP TABLE IF EXISTS `CardEntity`");
         if (mCallbacks != null) {
           for (int _i = 0, _size = mCallbacks.size(); _i < _size; _i++) {
             mCallbacks.get(_i).onDestructiveMigration(_db);
@@ -90,10 +98,10 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
         final HashMap<String, TableInfo.Column> _columnsTransactionEntity = new HashMap<String, TableInfo.Column>(7);
         _columnsTransactionEntity.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("date", new TableInfo.Column("date", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsTransactionEntity.put("transactionId", new TableInfo.Column("transactionId", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsTransactionEntity.put("sent", new TableInfo.Column("sent", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsTransactionEntity.put("transactionId", new TableInfo.Column("transactionId", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("beneficiary", new TableInfo.Column("beneficiary", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("amount", new TableInfo.Column("amount", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsTransactionEntity.put("userName", new TableInfo.Column("userName", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("phoneNumber", new TableInfo.Column("phoneNumber", "INTEGER", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysTransactionEntity = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesTransactionEntity = new HashSet<TableInfo.Index>(0);
@@ -120,9 +128,37 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
                   + " Expected:\n" + _infoErrorEntity + "\n"
                   + " Found:\n" + _existingErrorEntity);
         }
+        final HashMap<String, TableInfo.Column> _columnsCredentialsEntity = new HashMap<String, TableInfo.Column>(6);
+        _columnsCredentialsEntity.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsCredentialsEntity.put("userName", new TableInfo.Column("userName", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsCredentialsEntity.put("token", new TableInfo.Column("token", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsCredentialsEntity.put("logged", new TableInfo.Column("logged", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsCredentialsEntity.put("instanceId", new TableInfo.Column("instanceId", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsCredentialsEntity.put("baseUrl", new TableInfo.Column("baseUrl", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysCredentialsEntity = new HashSet<TableInfo.ForeignKey>(0);
+        final HashSet<TableInfo.Index> _indicesCredentialsEntity = new HashSet<TableInfo.Index>(0);
+        final TableInfo _infoCredentialsEntity = new TableInfo("CredentialsEntity", _columnsCredentialsEntity, _foreignKeysCredentialsEntity, _indicesCredentialsEntity);
+        final TableInfo _existingCredentialsEntity = TableInfo.read(_db, "CredentialsEntity");
+        if (! _infoCredentialsEntity.equals(_existingCredentialsEntity)) {
+          return new RoomOpenHelper.ValidationResult(false, "CredentialsEntity(com.example.transactionsmanager.common.entities.CredentialsEntity).\n"
+                  + " Expected:\n" + _infoCredentialsEntity + "\n"
+                  + " Found:\n" + _existingCredentialsEntity);
+        }
+        final HashMap<String, TableInfo.Column> _columnsCardEntity = new HashMap<String, TableInfo.Column>(2);
+        _columnsCardEntity.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsCardEntity.put("cardNumber", new TableInfo.Column("cardNumber", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysCardEntity = new HashSet<TableInfo.ForeignKey>(0);
+        final HashSet<TableInfo.Index> _indicesCardEntity = new HashSet<TableInfo.Index>(0);
+        final TableInfo _infoCardEntity = new TableInfo("CardEntity", _columnsCardEntity, _foreignKeysCardEntity, _indicesCardEntity);
+        final TableInfo _existingCardEntity = TableInfo.read(_db, "CardEntity");
+        if (! _infoCardEntity.equals(_existingCardEntity)) {
+          return new RoomOpenHelper.ValidationResult(false, "CardEntity(com.example.transactionsmanager.common.entities.CardEntity).\n"
+                  + " Expected:\n" + _infoCardEntity + "\n"
+                  + " Found:\n" + _existingCardEntity);
+        }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "2f873ccd8feb6ece3386bd5f9e4d048e", "f1dfddcd941edc32b7130d58d9e9189d");
+    }, "cfdaac828559fa70743a223b8746a779", "0239e97d5cbe55e5260dcecc953928e8");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
         .name(configuration.name)
         .callback(_openCallback)
@@ -135,7 +171,7 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
   protected InvalidationTracker createInvalidationTracker() {
     final HashMap<String, String> _shadowTablesMap = new HashMap<String, String>(0);
     HashMap<String, Set<String>> _viewTables = new HashMap<String, Set<String>>(0);
-    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "TransactionEntity","ErrorEntity");
+    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "TransactionEntity","ErrorEntity","CredentialsEntity","CardEntity");
   }
 
   @Override
@@ -146,6 +182,8 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
       super.beginTransaction();
       _db.execSQL("DELETE FROM `TransactionEntity`");
       _db.execSQL("DELETE FROM `ErrorEntity`");
+      _db.execSQL("DELETE FROM `CredentialsEntity`");
+      _db.execSQL("DELETE FROM `CardEntity`");
       super.setTransactionSuccessful();
     } finally {
       super.endTransaction();
@@ -161,6 +199,8 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
     final HashMap<Class<?>, List<Class<?>>> _typeConvertersMap = new HashMap<Class<?>, List<Class<?>>>();
     _typeConvertersMap.put(TransactionDAO.class, TransactionDAO_Impl.getRequiredConverters());
     _typeConvertersMap.put(ErrorDAO.class, ErrorDAO_Impl.getRequiredConverters());
+    _typeConvertersMap.put(CredentialsDAO.class, CredentialsDAO_Impl.getRequiredConverters());
+    _typeConvertersMap.put(CardDAO.class, CardDAO_Impl.getRequiredConverters());
     return _typeConvertersMap;
   }
 
@@ -200,6 +240,34 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
           _errorDAO = new ErrorDAO_Impl(this);
         }
         return _errorDAO;
+      }
+    }
+  }
+
+  @Override
+  public CredentialsDAO CredentialsDAO() {
+    if (_credentialsDAO != null) {
+      return _credentialsDAO;
+    } else {
+      synchronized(this) {
+        if(_credentialsDAO == null) {
+          _credentialsDAO = new CredentialsDAO_Impl(this);
+        }
+        return _credentialsDAO;
+      }
+    }
+  }
+
+  @Override
+  public CardDAO CardDAO() {
+    if (_cardDAO != null) {
+      return _cardDAO;
+    } else {
+      synchronized(this) {
+        if(_cardDAO == null) {
+          _cardDAO = new CardDAO_Impl(this);
+        }
+        return _cardDAO;
       }
     }
   }

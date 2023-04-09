@@ -9,21 +9,6 @@
         android:layout_height="match_parent"
         android:background="@color/fromvpn_panels_background_colors">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/check_account_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/fromvpn_secondary_background_color"
-            android:text="@string/manage_accounts_button_text"
-            android:textAllCaps="false"
-            android:textColor="@color/fromvpn_main_font_color"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:strokeColor="@color/fromvpn_main_color"
-            app:strokeWidth="2dp" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/transactions_list"
             android:layout_width="0dp"

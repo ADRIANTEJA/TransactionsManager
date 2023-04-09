@@ -20,7 +20,6 @@ public class TransactionItemBindingImpl extends TransactionItemBinding  {
         sViewsWithIds.put(R.id.date_data, 4);
         sViewsWithIds.put(R.id.amount_data, 5);
         sViewsWithIds.put(R.id.beneficiary_data, 6);
-        sViewsWithIds.put(R.id.user_name_data, 7);
     }
     // views
     // variables
@@ -29,7 +28,7 @@ public class TransactionItemBindingImpl extends TransactionItemBinding  {
     // Inverse Binding Event Handlers
 
     public TransactionItemBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 8, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 7, sIncludes, sViewsWithIds));
     }
     private TransactionItemBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 0
@@ -40,7 +39,6 @@ public class TransactionItemBindingImpl extends TransactionItemBinding  {
             , (android.widget.TextView) bindings[2]
             , (android.widget.TextView) bindings[3]
             , (androidx.constraintlayout.widget.ConstraintLayout) bindings[0]
-            , (android.widget.TextView) bindings[7]
             );
         this.transactionsDataView.setTag(null);
         setRootTag(root);

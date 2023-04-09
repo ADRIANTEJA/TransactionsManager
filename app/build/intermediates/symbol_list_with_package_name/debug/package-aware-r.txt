@@ -2979,7 +2979,6 @@ id bounce
 id bounceBoth
 id bounceEnd
 id bounceStart
-id button2
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -2993,7 +2992,6 @@ id center_vertical
 id chain
 id chain2
 id chains
-id check_account_button
 id checkbox
 id checked
 id chronometer
@@ -3257,7 +3255,6 @@ id progress_title
 id radio
 id ratio
 id rectangles
-id resetDBButton
 id reverseSawtooth
 id right
 id rightToLeft
@@ -3357,7 +3354,6 @@ id tag_transition_group
 id tag_unhandled_key_event_manager
 id tag_unhandled_key_listeners
 id tag_window_insets_animation_callback
-id testButton
 id text
 id text2
 id textEnd
@@ -3401,7 +3397,6 @@ id up
 id useLogo
 id user_field
 id user_field_template
-id user_name_data
 id vertical_only
 id view_offset_helper
 id view_transition

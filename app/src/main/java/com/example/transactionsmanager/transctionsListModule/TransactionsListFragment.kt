@@ -12,42 +12,53 @@ import com.example.transactionsmanager.transctionsListModule.adapters.Transactio
 import com.example.transactionsmanager.databinding.FragmentTransactionsListBinding
 import com.example.transactionsmanager.transctionsListModule.viewModel.TransactionsListViewModel
 
-class TransactionsListFragment : Fragment()
+open class TransactionsListFragment : Fragment()
 {
-    private var accountsManagerBinding: FragmentTransactionsListBinding? = null
-    private val _accountsManagerBinding get() = accountsManagerBinding!!
+    private var transactionsListBinding: FragmentTransactionsListBinding? = null
+    private val _transactionsListBinding get() = transactionsListBinding!!
+
     private lateinit var transactionAdapter: TransactionAdapter
     private lateinit var linearLayoutManager: RecyclerView.LayoutManager
     private lateinit var transactionsListViewModel: TransactionsListViewModel
 
+    companion object : TransactionsListFragment()
+    {
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
     {
-        accountsManagerBinding = FragmentTransactionsListBinding.inflate(inflater, container, false)
-        //transactionAdapter = TransactionAdapter()
-        linearLayoutManager = LinearLayoutManager(requireContext())
+        transactionsListBinding = FragmentTransactionsListBinding.inflate(inflater, container, false)
 
-        _accountsManagerBinding.transactionsList.apply()
-        {
-            layoutManager = linearLayoutManager
-            adapter = transactionAdapter
-        }
-        return _accountsManagerBinding.root
+        setupViewModel()
+        setupRecyclerView()
+        return _transactionsListBinding.root
     }
 
     override fun onDestroy()
     {
         super.onDestroy()
-        accountsManagerBinding = null
+        transactionsListBinding = null
     }
 
     private fun setupViewModel()
     {
         transactionsListViewModel = ViewModelProvider(this)[TransactionsListViewModel::class.java]
-        //transactionsListViewModel.getTransactions().observe( this, { transactions -> transactionAdapter.set })
+        transactionsListViewModel.getTransactions().observe( viewLifecycleOwner ) { transactions ->
+            transactionAdapter.setTransactions(transactions)
+        }
     }
 
     private fun setupRecyclerView()
     {
         transactionAdapter = TransactionAdapter(mutableListOf())
+        linearLayoutManager = LinearLayoutManager(requireContext())
+
+        _transactionsListBinding.transactionsList.apply()
+        {
+            setHasFixedSize(true)
+            layoutManager = linearLayoutManager
+            adapter = transactionAdapter
+        }
     }
 }

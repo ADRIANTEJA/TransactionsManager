@@ -54,7 +54,7 @@
                 android:id="@+id/amount_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_row="5"
+                android:layout_row="4"
                 android:layout_column="0"
                 android:layout_marginBottom="10sp"
                 android:textColor="@color/fromvpn_main_font_color"
@@ -71,16 +71,6 @@
                 android:textColor="@color/fromvpn_main_font_color"
                 android:textSize="18sp"
                 tools:text="Beneficiario: 1111222233334444"/>
-            <TextView
-                android:id="@+id/user_name_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="4"
-                android:layout_column="0"
-                android:layout_marginBottom="10sp"
-                android:textColor="@color/fromvpn_main_font_color"
-                android:textSize="18sp"
-                tools:text="Usuario: 1111222233334444"/>
         </GridLayout>
         <View
             android:layout_width="match_parent"

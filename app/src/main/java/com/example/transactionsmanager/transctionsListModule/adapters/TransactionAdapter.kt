@@ -1,6 +1,7 @@
 package com.example.transactionsmanager.transctionsListModule.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.transactionsmanager.R
 import com.example.transactionsmanager.common.entities.TransactionEntity
 import com.example.transactionsmanager.databinding.TransactionItemBinding
+import com.example.transactionsmanager.transctionsListModule.model.TransactionsDataHeaders
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TransactionAdapter(private var transactions: MutableList<TransactionEntity>) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>()
 {
     private lateinit var context: Context
+    private val dateFormat = SimpleDateFormat("dd/MM/yy h:m a", Locale.US)
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
     {
@@ -34,17 +39,18 @@ class TransactionAdapter(private var transactions: MutableList<TransactionEntity
 
         with(holder)
         {
-            binding.phoneNumberData.text = transaction.beneficiary.toString()
-            binding.transactionIdData.text = transaction.transactionId
-            binding.dateData.text = transaction.date.toString()
-            binding.amountData.text = transaction.amount.toString()
+            if (transaction.phoneNumber != null) (TransactionsDataHeaders.PHONE_NUMBER_HEADER_TEXT + transaction.phoneNumber.toString()).also { binding.phoneNumberData.text = it }
+            (TransactionsDataHeaders.BENEFICIARY_ID_HEADER_TEXT + transaction.beneficiary.toString()).also { binding.beneficiaryData.text = it }
+            (TransactionsDataHeaders.TRANSACTIONS_ID_HEADER_TEXT + transaction.transactionId).also { binding.transactionIdData.text = it }
+            (TransactionsDataHeaders.DATE_HEADER_TEXT + dateFormat.format(transaction.date).toString()).also { binding.dateData.text = it }
+            (TransactionsDataHeaders.AMOUNT_HEADER_TEXT + transaction.amount.toString()).also { binding.amountData.text = it }
         }
     }
 
     fun setTransactions(transactions: List<TransactionEntity>)
     {
         this.transactions = transactions as MutableList<TransactionEntity>
-        //notifyDataSetChanged()
+        notifyItemInserted(itemCount - 1)
     }
 
 }

@@ -4,7 +4,6 @@ package com.example.transactionsmanager.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -52,12 +51,6 @@ public abstract class LoginFragmentBinding extends ViewDataBinding {
   public final TextInputLayout passwordFieldTemplate;
 
   @NonNull
-  public final Button resetDBButton;
-
-  @NonNull
-  public final Button testButton;
-
-  @NonNull
   public final TextInputEditText userField;
 
   @NonNull
@@ -67,8 +60,8 @@ public abstract class LoginFragmentBinding extends ViewDataBinding {
       TextInputEditText addressField, TextInputLayout addressFieldTemplate, TextView errorLabel,
       ImageView fromvpnLogo, MaterialButton loginButton, LinearLayout loginDataFields,
       ConstraintLayout loginFragment, TextView loginLabel, TextInputEditText passwordField,
-      TextInputLayout passwordFieldTemplate, Button resetDBButton, Button testButton,
-      TextInputEditText userField, TextInputLayout userFieldTemplate) {
+      TextInputLayout passwordFieldTemplate, TextInputEditText userField,
+      TextInputLayout userFieldTemplate) {
     super(_bindingComponent, _root, _localFieldCount);
     this.addressField = addressField;
     this.addressFieldTemplate = addressFieldTemplate;
@@ -80,8 +73,6 @@ public abstract class LoginFragmentBinding extends ViewDataBinding {
     this.loginLabel = loginLabel;
     this.passwordField = passwordField;
     this.passwordFieldTemplate = passwordFieldTemplate;
-    this.resetDBButton = resetDBButton;
-    this.testButton = testButton;
     this.userField = userField;
     this.userFieldTemplate = userFieldTemplate;
   }

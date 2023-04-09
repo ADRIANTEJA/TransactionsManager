@@ -25,8 +25,6 @@ public class LoginFragmentBindingImpl extends LoginFragmentBinding  {
         sViewsWithIds.put(R.id.password_field, 9);
         sViewsWithIds.put(R.id.login_button, 10);
         sViewsWithIds.put(R.id.error_label, 11);
-        sViewsWithIds.put(R.id.resetDBButton, 12);
-        sViewsWithIds.put(R.id.testButton, 13);
     }
     // views
     // variables
@@ -35,7 +33,7 @@ public class LoginFragmentBindingImpl extends LoginFragmentBinding  {
     // Inverse Binding Event Handlers
 
     public LoginFragmentBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 14, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 12, sIncludes, sViewsWithIds));
     }
     private LoginFragmentBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 0
@@ -49,8 +47,6 @@ public class LoginFragmentBindingImpl extends LoginFragmentBinding  {
             , (android.widget.TextView) bindings[1]
             , (com.google.android.material.textfield.TextInputEditText) bindings[9]
             , (com.google.android.material.textfield.TextInputLayout) bindings[8]
-            , (android.widget.Button) bindings[12]
-            , (android.widget.Button) bindings[13]
             , (com.google.android.material.textfield.TextInputEditText) bindings[5]
             , (com.google.android.material.textfield.TextInputLayout) bindings[4]
             );

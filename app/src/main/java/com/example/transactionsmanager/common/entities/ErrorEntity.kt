@@ -3,7 +3,7 @@ package com.example.transactionsmanager.common.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "ErrorEntity")
 data class ErrorEntity(@PrimaryKey(autoGenerate = true) var id: Int,
                         var date: String,
                         var errorAddress: String,

@@ -4,7 +4,7 @@
     <string name="password_field_text">Contraseña</string>
     <string name="login_label_text">Inicio de Sesión</string>
     <string name="logo_label_description">logo_image</string>
-    <string name="address_field_text">Puerto</string>
+    <string name="address_field_text">Dirección</string>
     <string name="login_button_text">LOGIN</string>
     <string name="missing_input_error">Es necesario llenar todos los campos</string>
     <string name="error_400">Datos incorrectos</string>

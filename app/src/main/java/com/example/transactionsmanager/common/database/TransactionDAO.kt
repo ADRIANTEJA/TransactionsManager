@@ -7,17 +7,14 @@ import com.example.transactionsmanager.common.entities.TransactionEntity
 interface TransactionDAO
 {
     @Query("SELECT * FROM TransactionEntity")
-    fun getAllTransactions() : MutableList<TransactionEntity>
+    fun getAllTransactions(): MutableList<TransactionEntity>
 
-    @Query("DELETE FROM TransactionEntity")
-    fun deleteAll()
+    @Query("SELECT * FROM TransactionEntity WHERE sent = 0")
+    fun getUnsentTransactions(): MutableList<TransactionEntity>
 
     @Insert
     fun addTransaction(transactionEntity: TransactionEntity)
 
     @Update
-     fun updateTransaction(transactionEntity: TransactionEntity)
-
-    @Delete
-    fun removeTransaction(transactionEntity: TransactionEntity)
+    fun updateTransactions(transactions: MutableList<TransactionEntity>)
 }

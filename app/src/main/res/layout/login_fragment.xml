@@ -74,8 +74,7 @@
                     android:id="@+id/address_field"
                     android:layout_width="250dp"
                     android:layout_height="55dp"
-                    android:hint="@string/address_field_text"
-                    android:inputType="number"/>
+                    android:hint="@string/address_field_text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

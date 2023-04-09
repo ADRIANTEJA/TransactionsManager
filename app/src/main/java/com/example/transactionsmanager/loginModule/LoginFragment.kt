@@ -10,15 +10,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.transactionsmanager.loginModule.model.retrofit.LoginService
+import com.example.transactionsmanager.loginModule.model.retrofit.service.NetworkingService
 import com.example.transactionsmanager.R
 import com.example.transactionsmanager.TransactionApplication
+import com.example.transactionsmanager.common.entities.CredentialsEntity
 import com.example.transactionsmanager.databinding.LoginFragmentBinding
-import com.example.transactionsmanager.loginModule.model.Constants
-import com.example.transactionsmanager.loginModule.model.retrofit.LoginResponse
-import com.example.transactionsmanager.loginModule.model.retrofit.UserData
+import com.example.transactionsmanager.loginModule.model.retrofit.service.NetworkingData
+import com.example.transactionsmanager.loginModule.model.retrofit.login.LoginResponse
+import com.example.transactionsmanager.loginModule.model.retrofit.login.UserData
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -45,16 +46,23 @@ class LoginFragment: Fragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
         super.onViewCreated(view, savedInstanceState)
-        //val loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+
+        val sharedPreferences = requireContext().getSharedPreferences("MyPreferences",  Context.MODE_PRIVATE)
+        var uniqueId = sharedPreferences.getString("uniqueId", null)
+        if (uniqueId == null)
+        {
+            uniqueId = TransactionApplication.generateRandomString(100)
+            with(sharedPreferences.edit())
+            {
+                putString("uniqueId", uniqueId)
+                apply()
+            }
+        }
+
+        lifecycleScope.launch { if (isLogged()) { MainActivity.goToTransactionsList(view) } }
+
+
         _loginBinding.loginButton.setOnClickListener { login(view) }
-
-        //here remenber to implement the condition login automatically provided the token sent to the server is right or else call login funtion again
-    }
-
-    override fun onDestroy()
-    {
-        loginBinding = null
-        super.onDestroy()
     }
 
     private fun login(view: View)
@@ -62,27 +70,68 @@ class LoginFragment: Fragment()
         val userName = _loginBinding.userField.text.toString()
         val address = _loginBinding.addressField.text.toString()
         val password = _loginBinding.passwordField.text.toString()
+        val deviceId = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+            .getString("uniqueId", null).toString()
 
         if(!isInputDataValid(userName, address, password)) return
 
         if(isOnline(requireContext()))
         {
             val retrofit = Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
+                .baseUrl(NetworkingData.URL_BASE + address)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
-            val service = retrofit.create(LoginService::class.java)
-            service.login(UserData(userName, password)).enqueue(
+            val service = retrofit.create(NetworkingService::class.java)
+
+            service.login(UserData(userName, password, deviceId)).enqueue(
                 object : Callback<LoginResponse>
                 {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>)
                     {
-                        MainActivity.navigateUI(view)
+                        when(response.code())
+                        {
+                            200 ->
+                            {
+                                lifecycleScope.launch()
+                                {
+                                    withContext(Dispatchers.IO)
+                                    {
+                                        if(TransactionApplication.database.CredentialsDAO().getCredentials().isNotEmpty())
+                                        {
+                                            TransactionApplication.database.CredentialsDAO().updateCredentials(CredentialsEntity(1,
+                                                                                                                                userName,
+                                                                                                                                response.body()!!.token,
+                                                                                                                                true,
+                                                                                                                                deviceId,
+                                                                                                                                address))
+                                            Log.d("test", TransactionApplication.database.CredentialsDAO().getCredentials().toString())
+                                        }
+                                        else
+                                        { TransactionApplication.database.CredentialsDAO().insertCredentials(CredentialsEntity(1,
+                                                                                                                               userName,
+                                                                                                                               response.body()!!.token,
+                                                                                                                               true,
+                                                                                                                               deviceId,
+                                                                                                                               address))
+                                            Log.d("test", TransactionApplication.database.CredentialsDAO().getCredentials().toString())
+                                        }
+                                    }
+                                }
+                                MainActivity.goToTransactionsList(view)
+                            }
+                            in 401..403 -> { _loginBinding.errorLabel.text = "Credeciales incorrectas" }
+                            500 -> { _loginBinding.errorLabel.text = "Error interno en el servidor" }
+                            502 -> { _loginBinding.errorLabel.text = "Servicio no disponible" }
+                        }
                     }
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable)
                     {
-                        _loginBinding.errorLabel.text = getString(R.string.error_400)
+                        when(t)
+                        {
+                            is IOException -> _loginBinding.errorLabel.text = "Error de conexion o direccion incorrecta"
+                            is HttpException -> _loginBinding.errorLabel.text = "Error en el servidor"
+                        }
                     }
                 }
             )
@@ -200,6 +249,16 @@ class LoginFragment: Fragment()
                 ))
             }
         }
+    }
+
+    private suspend fun isLogged(): Boolean
+    {
+        return withContext(Dispatchers.IO) { TransactionApplication.database.CredentialsDAO().getLogged(1) }
+    }
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        loginBinding = null
     }
 }
 

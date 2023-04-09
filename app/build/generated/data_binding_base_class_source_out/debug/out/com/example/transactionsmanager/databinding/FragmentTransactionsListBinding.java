@@ -11,14 +11,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.transactionsmanager.R;
-import com.google.android.material.button.MaterialButton;
 import java.lang.Deprecated;
 import java.lang.Object;
 
 public abstract class FragmentTransactionsListBinding extends ViewDataBinding {
-  @NonNull
-  public final MaterialButton checkAccountButton;
-
   @NonNull
   public final ConstraintLayout fragmentAccountsManager;
 
@@ -26,10 +22,9 @@ public abstract class FragmentTransactionsListBinding extends ViewDataBinding {
   public final RecyclerView transactionsList;
 
   protected FragmentTransactionsListBinding(Object _bindingComponent, View _root,
-      int _localFieldCount, MaterialButton checkAccountButton,
-      ConstraintLayout fragmentAccountsManager, RecyclerView transactionsList) {
+      int _localFieldCount, ConstraintLayout fragmentAccountsManager,
+      RecyclerView transactionsList) {
     super(_bindingComponent, _root, _localFieldCount);
-    this.checkAccountButton = checkAccountButton;
     this.fragmentAccountsManager = fragmentAccountsManager;
     this.transactionsList = transactionsList;
   }

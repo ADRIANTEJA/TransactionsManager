@@ -6,13 +6,21 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.transactionsmanager.loginModule.LoginFragment"
-        android:label="LoginFragment" >
+        android:label="LoginFragment">
         <action
             android:id="@+id/action_loginFragment_to_accountsManagerFragment"
-            app:destination="@id/accountsManagerFragment" />
+            app:destination="@id/accountsManagerFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/accountsManagerFragment"
         android:name="com.example.transactionsmanager.transctionsListModule.TransactionsListFragment"
-        android:label="AccountsManagerFragment" />
+        android:label="AccountsManagerFragment">
+        <action
+            android:id="@+id/action_account_to_accountsManagerFragment"
+            app:destination="@+id/loginFragment"
+            app:popUpTo="@id/accountsManagerFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
 </navigation>
