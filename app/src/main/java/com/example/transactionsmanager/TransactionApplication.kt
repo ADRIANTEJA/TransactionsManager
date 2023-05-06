@@ -1,10 +1,18 @@
 package com.example.transactionsmanager
 
 import android.app.Application
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
 import android.os.CountDownTimer
 import android.telephony.SmsMessage
 import android.util.Log
+import androidx.compose.ui.window.Dialog
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.room.OnConflictStrategy
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.transactionsmanager.common.database.TransactionDatabase
 import com.example.transactionsmanager.common.entities.CardEntity
 import com.example.transactionsmanager.common.entities.ErrorEntity
@@ -12,10 +20,12 @@ import com.example.transactionsmanager.common.entities.TransactionEntity
 import com.example.transactionsmanager.common.utils.*
 import com.example.transactionsmanager.common.utils.exceptions.InvalidSmsTypeException
 import com.example.transactionsmanager.common.utils.exceptions.SmsSizeChangedException
-import com.example.transactionsmanager.loginModule.model.retrofit.cardGetting.GetCardResponse
+import com.example.transactionsmanager.loginModule.model.retrofit.cardGetting.GetCardsResponse
+import com.example.transactionsmanager.loginModule.model.retrofit.errorPosting.ErrorData
 import com.example.transactionsmanager.loginModule.model.retrofit.service.NetworkingData
 import com.example.transactionsmanager.loginModule.model.retrofit.service.NetworkingService
 import com.example.transactionsmanager.loginModule.model.retrofit.transactionPosting.TransactionData
+import com.example.transactionsmanager.loginModule.model.retrofit.transactionPosting.validTokenResponse.TokenData
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,7 +38,7 @@ import java.lang.Exception
 import java.net.InetAddress
 import java.util.*
 
-open class TransactionApplication : Application()
+class TransactionApplication : Application()
 {
     companion object
     {
@@ -57,7 +67,7 @@ open class TransactionApplication : Application()
         //this function recieves the filterSMS function and process or ignores the sms in base to filterSMS return value
         fun processSMS(sms: SmsMessage, filterResult: String): TransactionEntity?
         {
-            val transaction = TransactionEntity(0,1, false,"ID", 1, 0.0, null)
+            val transaction = TransactionEntity(0,1, false,"ID", "1", 0.0, null)
 
             when (filterResult)
             {
@@ -83,7 +93,7 @@ open class TransactionApplication : Application()
 
                 transactionEntity.apply()
                 {
-                    beneficiary = sms.displayMessageBody.subSequence(46, 62).toString().toLong()
+                    beneficiary = sms.displayMessageBody.subSequence(46, 62).toString()
                     transactionId = sms.displayMessageBody.subSequence(97, 110).toString()
                     date = actualDate.time.time
 
@@ -107,7 +117,8 @@ open class TransactionApplication : Application()
                             "TransactionApplication.processFirstType",
                             "sms structure changed",
                             ErrorDescriptions.SMS_STRUCTURE_CHANGED,
-                            sms.originatingAddress.toString() )
+                            sms.originatingAddress.toString(),
+                            false)
                         database.errorDAO().addError(error)
                         return false
                     }
@@ -117,7 +128,8 @@ open class TransactionApplication : Application()
                             "TransactionApplication.processFirstType",
                             "sms size changed",
                             ErrorDescriptions.SMS_SIZE_CHANGED,
-                            sms.originatingAddress.toString())
+                            sms.originatingAddress.toString(),
+                            false)
                         database.errorDAO().addError(error)
                         return false
                     }
@@ -141,8 +153,8 @@ open class TransactionApplication : Application()
                     {
                         transaction.apply()
                         {
-                            beneficiary = sms.displayMessageBody.subSequence(81, 97).toString().toLong()
-                            phoneNumber = sms.displayMessageBody.subSequence(24, 34).toString().toLong()
+                            beneficiary = sms.displayMessageBody.subSequence(81, 97).toString()
+                            phoneNumber = sms.displayMessageBody.subSequence(24, 34).toString()
                             transactionId = sms.displayMessageBody.subSequence(130, sms.displayMessageBody.length).toString()
 
                             date = actualDate.time.time
@@ -173,7 +185,8 @@ open class TransactionApplication : Application()
                             "TransactionApplication.processSecondType",
                             "sms structure changed",
                             ErrorDescriptions.SMS_STRUCTURE_CHANGED,
-                            sms.originatingAddress.toString() )
+                            sms.originatingAddress.toString(),
+                            false)
                         database.errorDAO().addError(error)
                         return false
                     }
@@ -183,7 +196,8 @@ open class TransactionApplication : Application()
                             "TransactionApplication.processSecondType",
                             "invalid sms type",
                             ErrorDescriptions.INVALID_TYPE_SMS,
-                            sms.originatingAddress.toString() )
+                            sms.originatingAddress.toString(),
+                            false)
                         database.errorDAO().addError(error)
                         return false
                     }
@@ -193,7 +207,8 @@ open class TransactionApplication : Application()
                             "TransactionApplication.processSecondType",
                             "sms size changed",
                             ErrorDescriptions.SMS_SIZE_CHANGED,
-                            sms.originatingAddress.toString())
+                            sms.originatingAddress.toString(),
+                            false)
                         database.errorDAO().addError(error)
                         return false
                     }
@@ -202,7 +217,7 @@ open class TransactionApplication : Application()
             return true
         }
 
-        fun createSmsCollectorTrigger() : CountDownTimer
+        fun createSmsCollectorTrigger(context: Context) : CountDownTimer
         {
             return object : CountDownTimer(20000, 20000) // remember to set to 1 min
             {
@@ -214,31 +229,59 @@ open class TransactionApplication : Application()
                     {
                         withContext(Dispatchers.IO)
                         {
-                            sendAndUpdateTransactions()
+                            if (database.ControlFlowDAO().getUploadTransactionsControlFlow(1)) { sendAndUpdateTransactions(context) }
+                            if (database.ControlFlowDAO().getUploadErrorsControlFlow(1)) { sendAndUpdateErrors(context) }
                         }
                     }
                 }
             }
         }
 
-        private fun sendAndUpdateTransactions()
+        suspend fun sendAndUpdateTransactions(context: Context)
         {
+            switchTransactionsControlFlow(false)
+
             if(isServerReachable())
             {
                 val unsentTransactions: MutableList<TransactionEntity> = database.transactionDAO().getUnsentTransactions()
 
-                when(transactionsUploadRequest(convertTransactionsToUpload(unsentTransactions)))
+                when(makeTransactionsUploadRequest(convertTransactionsToUpload(unsentTransactions)))
                 {
                     "401" ->
                     {
+                        while(true)
+                        {
+                            when(tokenValidity())
+                            {
+                                "isNotValid" ->
+                                {
+                                    val transactionApplication = context as TransactionApplication
+                                    transactionApplication.sendIntent("go-back-to-login")
+                                    break
+                                }
+                                "isValid" -> break
+                            }
+                        }
+                    }
+                    "403" ->
+                    {
+                        val transactionApplication = context as TransactionApplication
+                        transactionApplication.sendIntent("go-back-to-login")
+                    }
 
+                    else ->
+                    {
+                        switchTransactionsControlFlow(true)
+                        return
                     }
                 }
 
                 unsentTransactions.forEach{ it.sent = true }
                 database.transactionDAO().updateTransactions(unsentTransactions)
             }
-            else { sendAndUpdateTransactions() }
+            else { sendAndUpdateTransactions(context) }
+
+            switchTransactionsControlFlow(true)
         }
 
         private fun isServerReachable(): Boolean
@@ -247,7 +290,7 @@ open class TransactionApplication : Application()
             return serverAddress.isReachable(3000)
         }
 
-        private fun transactionsUploadRequest(convertedTransactions: MutableList<TransactionData>): String
+        private fun makeTransactionsUploadRequest(convertedTransactions: MutableList<TransactionData>): String
         {
             var responseCode = "noResponse"
             val retrofit = Retrofit.Builder()
@@ -269,18 +312,10 @@ open class TransactionApplication : Application()
                                 {
                                     401 -> responseCode = "401"
                                     403 -> responseCode = "403"
-                                    in 500..599 -> responseCode= "500+"
                                 }
                             }
 
-                            override fun onFailure(call: Call<Void>, t: Throwable)
-                            {
-                                when(t)
-                                {
-                                    is IOException -> { responseCode = "noConnection" }
-                                    is HttpException -> { responseCode = "serverError" }
-                                }
-                            }
+                            override fun onFailure(call: Call<Void>, t: Throwable) { }
                         }
                     )
                 }
@@ -312,8 +347,89 @@ open class TransactionApplication : Application()
                 .joinToString("")
         }
 
-        fun assignAccount()
+        suspend fun assignAccounts(context: Context): String
         {
+            var responseStatus = "successful" // this variable is to control the success of the request(no connection errors etc) it doesn't matter if it takes back to login
+            applicationScope.launch()
+            {
+                withContext(Dispatchers.IO)
+                {
+                    var responseCode = "no Response"
+                    var cards = mutableListOf<String>()
+
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl(NetworkingData.URL_BASE + database.CredentialsDAO().getBaseUrl(1))
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+
+                    val service = retrofit.create(NetworkingService::class.java)
+                    service.getCards().enqueue(
+                        object : Callback<GetCardsResponse>
+                        {
+                            override fun onResponse(call: Call<GetCardsResponse>, response: Response<GetCardsResponse>)
+                            {
+                                when(response.code())
+                                {
+                                    200 ->
+                                    {
+                                        responseCode = "200"
+                                        cards = mutableListOf(*response.body()!!.cardsList.toTypedArray())
+                                    }
+                                    403 ->
+                                    {
+                                        responseCode = "403"
+                                        database.CredentialsDAO().updateLoggedState(1, false)
+                                    }
+                                    401 -> { responseCode = "401" }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<GetCardsResponse>, t: Throwable)
+                            {
+                                when(t)
+                                {
+                                    is IOException -> { responseStatus = "noInternetConnection"}
+                                    is HttpException -> { responseStatus = "serverError" }
+                                }
+                            }
+                        }
+                    )
+
+                    when (responseCode)
+                    {
+                        "200" ->
+                        {
+                            for (i in cards.indices)
+                            {
+                                val card = database.CardDAO().getByCardNumber(cards[i].toLong())
+                                if (card != null) { continue }
+                                else
+                                {
+                                    database.CardDAO().deleteAllCards()
+                                    for (j in cards.indices) { database.CardDAO().addCard(CardEntity(0, cards[j].toLong())) }
+                                    break
+                                }
+                            }
+                        }
+                        "403" ->
+                        {
+                            val transactionApplication = context.applicationContext as TransactionApplication
+                            transactionApplication.sendIntent("go-back-to-login")
+                        }
+                        "401" ->
+                        {
+                            if (tokenValidity() == "isNotValid") { responseStatus = "invalidToken" }
+                            else if (tokenValidity() == "notChecked") { responseStatus = "tokenNotChecked"}
+                        }
+                    }
+                }
+            }
+            return responseStatus
+        }
+
+        private suspend fun tokenValidity(): String
+        {
+            var validity = "isNotValid"
             applicationScope.launch()
             {
                 withContext(Dispatchers.IO)
@@ -324,49 +440,184 @@ open class TransactionApplication : Application()
                         .build()
 
                     val service = retrofit.create(NetworkingService::class.java)
-                    service.getCards().enqueue(
-                        object : Callback<GetCardResponse>
+                    service.validateToken(TokenData(database.CredentialsDAO().getToken(1))).enqueue(
+                        object : Callback<Void>
                         {
-                            override fun onResponse(call: Call<GetCardResponse>, response: Response<GetCardResponse>)
+                            override fun onResponse(call: Call<Void>, response: Response<Void>)
                             {
                                 when(response.code())
                                 {
-                                    200 ->
-                                    {
-                                        val cards = listOf<String>(*response.body()!!.cardsList.toTypedArray())
-
-                                        for (i in cards.indices)
-                                        {
-                                            val card = database.CardDAO().findByCardNumber(cards[i].toLong())
-                                            if (card != null) { continue }
-                                            else
-                                            {
-                                                database.CardDAO().deleteAllCards()
-                                                for (j in cards.indices) { database.CardDAO().addCard(CardEntity(0, cards[j].toLong())) }
-                                                break
-                                            }
-                                        }
-                                    }
-                                    403 ->
-                                    {
-
-                                    }
+                                    200 -> { validity = "isValid" }
+                                    in 401..403 -> { database.CredentialsDAO().updateLoggedState(1, false) }
                                 }
                             }
 
-                            override fun onFailure(call: Call<GetCardResponse>, t: Throwable)
+                            override fun onFailure(call: Call<Void>, t: Throwable)
                             {
-
+                                when(t)
+                                {
+                                    is IOException -> validity = "notChecked"
+                                    is HttpException -> validity = "notChecked"
+                                }
                             }
                         }
                     )
                 }
             }
+            return validity
+        }
+
+        suspend fun sendAndUpdateErrors(context: Context)
+        {
+            switchErrorControlFlow(false)
+
+            if (isServerReachable())
+            {
+                val unsentErrors: MutableList<ErrorEntity> = database.errorDAO().getUnsentErrors()
+
+                when(makeErrorsUploadRequest(convertErrorsToUpload(unsentErrors)))
+                {
+                    "401" ->
+                    {
+                        while(true)
+                        {
+                            when(tokenValidity())
+                            {
+                                "isNotValid" ->
+                                {
+                                    val transactionApplication = context as TransactionApplication
+                                    transactionApplication.sendIntent("go-back-to-login")
+                                    break
+                                }
+                                "isValid" ->  break
+                            }
+                        }
+                    }
+                    "403" ->
+                    {
+                        val transactionApplication = context as TransactionApplication
+                        transactionApplication.sendIntent("go-back-to-login")
+                    }
+
+                    else ->
+                    {
+                        switchErrorControlFlow(true)
+                        return
+                    }
+                }
+                unsentErrors.forEach { it.sent = true }
+                database.errorDAO().updateErrors(unsentErrors)
+            }
+            else { sendAndUpdateErrors(context) }
+
+            switchErrorControlFlow(true)
+        }
+
+        private fun makeErrorsUploadRequest(convertedErrors: MutableList<ErrorData>): String
+        {
+            var responseCode = "noResponse"
+            val retrofit = Retrofit.Builder()
+                .baseUrl(NetworkingData.URL_BASE + database.CredentialsDAO().getBaseUrl(1))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            val service = retrofit.create(NetworkingService::class.java)
+
+            applicationScope.launch()
+            {
+                withContext(Dispatchers.IO)
+                {
+                    service.uploadErrors(convertedErrors).enqueue(
+                        object : Callback<Void>
+                        {
+                            override fun onResponse(call: Call<Void>, response: Response<Void>)
+                            {
+                                when(response.code())
+                                {
+                                    401 -> responseCode = "401"
+                                    403 -> responseCode = "403"
+                                }
+                            }
+
+                            override fun onFailure(call: Call<Void>, t: Throwable) { }
+                        }
+                    )
+                }
+            }
+            return responseCode
+        }
+
+        private fun convertErrorsToUpload(unsentErrors: MutableList<ErrorEntity>): MutableList<ErrorData>
+        {
+            val convertedErrors: MutableList<ErrorData> = mutableListOf()
+
+            for (i in 0 until unsentErrors.size)
+            {
+                convertedErrors.add(ErrorData(unsentErrors[i].errorName,
+                                              unsentErrors[i].errorAddress,
+                                              unsentErrors[i].smsOrigin,
+                                              unsentErrors[i].date,
+                                              unsentErrors[i].header))
+            }
+
+            return convertedErrors
+        }
+
+        private fun switchTransactionsControlFlow(canBeUploaded: Boolean)
+        {
+            applicationScope.launch()
+            {
+                withContext(Dispatchers.IO)
+                {
+                    database.ControlFlowDAO().updateUploadTransactionsControlFlow(1, canBeUploaded)
+                }
+            }
+        }
+
+        private fun switchErrorControlFlow(canBeUploaded: Boolean)
+        {
+            applicationScope.launch()
+            {
+                withContext(Dispatchers.IO)
+                {
+                    database.ControlFlowDAO().updateUploadErrorsControlFlow(1, canBeUploaded)
+                }
+            }
         }
     }
+
+    fun sendIntent(actionName: String)
+    {
+        applicationScope.launch()
+        {
+            val intent = Intent(actionName)
+            LocalBroadcastManager.getInstance(this@TransactionApplication).sendBroadcast(intent)
+        }
+    }
+
     override fun onCreate()
     {
         super.onCreate()
-        database = Room.databaseBuilder(this, TransactionDatabase::class.java, "TransactionDatabase").fallbackToDestructiveMigration().build()
+        database = Room.databaseBuilder(this, TransactionDatabase::class.java, "TransactionDatabase")
+            .addCallback(
+                object : RoomDatabase.Callback()
+                {
+                    override fun onCreate(db: SupportSQLiteDatabase)
+                    {
+                        super.onCreate(db)
+                        val defaultControlFlowEntity = ContentValues()
+
+                        defaultControlFlowEntity.apply()
+                        {
+                            put("id", 1)
+                            put("canUploadTransaction", true)
+                            put("canUploadErrors", true)
+                        }
+
+                        db.insert("ControlFlowEntity", OnConflictStrategy.IGNORE, defaultControlFlowEntity)
+                    }
+                }
+            )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }

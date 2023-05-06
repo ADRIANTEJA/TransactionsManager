@@ -20,7 +20,11 @@
     <color name="white">#FFFFFFFF</color>
     <string name="address_field_text">Dirección</string>
     <string name="app_name">TransactionsManager</string>
+    <string name="button1_title">Log out</string>
+    <string name="button2_title">Update cards</string>
+    <string name="button3_title">Upload Transactions</string>
     <string name="error_400">Datos incorrectos</string>
+    <string name="event_busy_message">Esta tarea se encuentra en curso</string>
     <string name="field_required_warning">Requerido</string>
     <string name="login_button_text">LOGIN</string>
     <string name="login_label_text">Inicio de Sesión</string>

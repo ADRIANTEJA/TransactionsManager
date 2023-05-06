@@ -15,6 +15,12 @@ interface CredentialsDAO
     @Query("SELECT logged FROM CredentialsEntity WHERE id = :userId")
     fun getLogged(userId: Int): Boolean
 
+    @Query("UPDATE CredentialsEntity SET logged = :loggedState WHERE id = :userId")
+    fun updateLoggedState(userId: Int, loggedState: Boolean)
+
+    @Query("SELECT token FROM CredentialsEntity Where id = :userId")
+    fun getToken(userId: Int): String
+
     @Update
     fun updateCredentials(credentials: CredentialsEntity)
 

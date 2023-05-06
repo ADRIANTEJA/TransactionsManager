@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/log_out_button"
+        android:title="@string/button1_title"
+        app:showAsAction="never"
+        android:icon="@drawable/log_out_icon"/>
+    <item
+        android:id="@+id/update_cards_button"
+        android:title="@string/button2_title"
+        app:showAsAction="never"
+        android:icon="@drawable/refresh_icon"/>
+    <item
+        android:id="@+id/upload_transactions_button"
+        android:title="@string/button3_title"
+        app:showAsAction="never"
+        android:icon="@drawable/upload_transactions_icon"/>
+</menu>

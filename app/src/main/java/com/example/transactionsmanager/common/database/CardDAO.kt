@@ -16,5 +16,5 @@ interface CardDAO
     fun deleteAllCards()
 
     @Query("SELECT * FROM CardEntity WHERE cardNumber = :cardNumber")
-    fun findByCardNumber(cardNumber: Long): CardEntity?
+    fun getByCardNumber(cardNumber: Long): CardEntity?
 }

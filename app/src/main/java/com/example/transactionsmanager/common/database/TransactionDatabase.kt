@@ -2,12 +2,13 @@ package com.example.transactionsmanager.common.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.transactionsmanager.common.entities.CardEntity
-import com.example.transactionsmanager.common.entities.CredentialsEntity
-import com.example.transactionsmanager.common.entities.ErrorEntity
-import com.example.transactionsmanager.common.entities.TransactionEntity
+import com.example.transactionsmanager.common.entities.*
 
-@Database(entities = [TransactionEntity::class, ErrorEntity::class, CredentialsEntity::class, CardEntity::class], version = 9)
+@Database(entities = [TransactionEntity::class,
+                      ErrorEntity::class,
+                      CredentialsEntity::class,
+                      CardEntity::class,
+                      ControlFlowEntity::class], version = 13)
 abstract class TransactionDatabase : RoomDatabase()
 {
     abstract fun transactionDAO() : TransactionDAO
@@ -17,4 +18,6 @@ abstract class TransactionDatabase : RoomDatabase()
     abstract fun CredentialsDAO() : CredentialsDAO
 
     abstract fun CardDAO() : CardDAO
+
+    abstract fun ControlFlowDAO() : ControlFlowDAO
 }

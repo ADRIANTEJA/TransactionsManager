@@ -10,7 +10,6 @@ import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
 import com.example.transactionsmanager.common.entities.TransactionEntity;
 import java.lang.Class;
-import java.lang.Long;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
@@ -45,12 +44,16 @@ public final class TransactionDAO_Impl implements TransactionDAO {
         } else {
           stmt.bindString(4, value.getTransactionId());
         }
-        stmt.bindLong(5, value.getBeneficiary());
+        if (value.getBeneficiary() == null) {
+          stmt.bindNull(5);
+        } else {
+          stmt.bindString(5, value.getBeneficiary());
+        }
         stmt.bindDouble(6, value.getAmount());
         if (value.getPhoneNumber() == null) {
           stmt.bindNull(7);
         } else {
-          stmt.bindLong(7, value.getPhoneNumber());
+          stmt.bindString(7, value.getPhoneNumber());
         }
       }
     };
@@ -71,12 +74,16 @@ public final class TransactionDAO_Impl implements TransactionDAO {
         } else {
           stmt.bindString(4, value.getTransactionId());
         }
-        stmt.bindLong(5, value.getBeneficiary());
+        if (value.getBeneficiary() == null) {
+          stmt.bindNull(5);
+        } else {
+          stmt.bindString(5, value.getBeneficiary());
+        }
         stmt.bindDouble(6, value.getAmount());
         if (value.getPhoneNumber() == null) {
           stmt.bindNull(7);
         } else {
-          stmt.bindLong(7, value.getPhoneNumber());
+          stmt.bindString(7, value.getPhoneNumber());
         }
         stmt.bindLong(8, value.getId());
       }
@@ -138,15 +145,19 @@ public final class TransactionDAO_Impl implements TransactionDAO {
         } else {
           _tmpTransactionId = _cursor.getString(_cursorIndexOfTransactionId);
         }
-        final long _tmpBeneficiary;
-        _tmpBeneficiary = _cursor.getLong(_cursorIndexOfBeneficiary);
+        final String _tmpBeneficiary;
+        if (_cursor.isNull(_cursorIndexOfBeneficiary)) {
+          _tmpBeneficiary = null;
+        } else {
+          _tmpBeneficiary = _cursor.getString(_cursorIndexOfBeneficiary);
+        }
         final double _tmpAmount;
         _tmpAmount = _cursor.getDouble(_cursorIndexOfAmount);
-        final Long _tmpPhoneNumber;
+        final String _tmpPhoneNumber;
         if (_cursor.isNull(_cursorIndexOfPhoneNumber)) {
           _tmpPhoneNumber = null;
         } else {
-          _tmpPhoneNumber = _cursor.getLong(_cursorIndexOfPhoneNumber);
+          _tmpPhoneNumber = _cursor.getString(_cursorIndexOfPhoneNumber);
         }
         _item = new TransactionEntity(_tmpId,_tmpDate,_tmpSent,_tmpTransactionId,_tmpBeneficiary,_tmpAmount,_tmpPhoneNumber);
         _result.add(_item);
@@ -189,15 +200,19 @@ public final class TransactionDAO_Impl implements TransactionDAO {
         } else {
           _tmpTransactionId = _cursor.getString(_cursorIndexOfTransactionId);
         }
-        final long _tmpBeneficiary;
-        _tmpBeneficiary = _cursor.getLong(_cursorIndexOfBeneficiary);
+        final String _tmpBeneficiary;
+        if (_cursor.isNull(_cursorIndexOfBeneficiary)) {
+          _tmpBeneficiary = null;
+        } else {
+          _tmpBeneficiary = _cursor.getString(_cursorIndexOfBeneficiary);
+        }
         final double _tmpAmount;
         _tmpAmount = _cursor.getDouble(_cursorIndexOfAmount);
-        final Long _tmpPhoneNumber;
+        final String _tmpPhoneNumber;
         if (_cursor.isNull(_cursorIndexOfPhoneNumber)) {
           _tmpPhoneNumber = null;
         } else {
-          _tmpPhoneNumber = _cursor.getLong(_cursorIndexOfPhoneNumber);
+          _tmpPhoneNumber = _cursor.getString(_cursorIndexOfPhoneNumber);
         }
         _item = new TransactionEntity(_tmpId,_tmpDate,_tmpSent,_tmpTransactionId,_tmpBeneficiary,_tmpAmount,_tmpPhoneNumber);
         _result.add(_item);

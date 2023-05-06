@@ -8,6 +8,7 @@ object NetworkingData
     const val REFRESH_TOKEN = "/refresh-token/"
     const val GET_CARD = "/billing/cards/"
     const val POST_TRANSACTIONS = "/billing/payments/"
+    const val POST_ERRORS = "/logs/billing-errors-device/"
 
     // login data keys
     const val USER_NAME = "username"
@@ -27,4 +28,7 @@ object NetworkingData
     const val SMS_ORIGIN = "smsOrigin"
     const val ERROR_DATE = "date"
     const val HEADER = "header"
+
+    // others
+    const val VALIDATION_TOKEN = "validationToken"
 }

@@ -9,6 +9,6 @@ data class TransactionEntity ( @PrimaryKey(autoGenerate = true) var id: Int,
                                 var date: Long,
                                 var sent: Boolean = false,
                                 var transactionId: String,
-                                var beneficiary: Long,
+                                var beneficiary: String,
                                 var amount: Double,
-                                var phoneNumber: Long? = null)
+                                var phoneNumber: String? = null)

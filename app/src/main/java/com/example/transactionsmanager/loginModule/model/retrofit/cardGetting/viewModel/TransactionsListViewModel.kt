@@ -1,4 +1,4 @@
-package com.example.transactionsmanager.transctionsListModule.viewModel
+package com.example.transactionsmanager.loginModule.model.retrofit.cardGetting.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

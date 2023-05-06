@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.example.transactionsmanager.loginModule.model.retrofit.service.NetworkingService
 import com.example.transactionsmanager.R
 import com.example.transactionsmanager.TransactionApplication
@@ -32,10 +33,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
-class LoginFragment: Fragment()
+open class LoginFragment: Fragment()
 {
     private var loginBinding: LoginFragmentBinding? = null
     private val _loginBinding get() = loginBinding!!
+
+    companion object : LoginFragment()
+    {
+        fun goToTransactionsList(view: View)
+        {
+            val action = LoginFragmentDirections.actionLoginFragmentToTransactionsListFragment()
+            view.findNavController().navigate(action)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
     {
@@ -59,10 +69,8 @@ class LoginFragment: Fragment()
             }
         }
 
-        lifecycleScope.launch { if (isLogged()) { MainActivity.goToTransactionsList(view) } }
-
-
-        _loginBinding.loginButton.setOnClickListener { login(view) }
+        lifecycleScope.launch { if (isLogged()) { goToTransactionsList(view) } }
+        _loginBinding.loginButton.setOnClickListener { /*goToTransactionsList(view)*/ login(view) }
     }
 
     private fun login(view: View)
@@ -118,7 +126,7 @@ class LoginFragment: Fragment()
                                         }
                                     }
                                 }
-                                MainActivity.goToTransactionsList(view)
+                                goToTransactionsList(view)
                             }
                             in 401..403 -> { _loginBinding.errorLabel.text = "Credeciales incorrectas" }
                             500 -> { _loginBinding.errorLabel.text = "Error interno en el servidor" }
@@ -189,30 +197,34 @@ class LoginFragment: Fragment()
     {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        if(connectivityManager.activeNetwork != null) return true
+        return if(connectivityManager.activeNetwork != null) true
         else
         {
-            Snackbar.make(_loginBinding.loginButton,"", Snackbar.LENGTH_SHORT).apply()
-            {
-                setAction(" ") {} // so the SnackBar creates the view otherwise it won't
-                val noConnectionWarning = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_action)
-                noConnectionWarning.text = getString(R.string.no_connection_message)
-                noConnectionWarning.width = _loginBinding.loginFragment.width
-                noConnectionWarning.textAlignment = View.TEXT_ALIGNMENT_CENTER
-                noConnectionWarning.setTextColor(
-                    ContextCompat.getColor(context,
+            connectionErrorNotification(context)
+            MainActivity.hideKeyboard(context, this.requireView())
+            false
+        }
+    }
+
+    private fun connectionErrorNotification(context: Context)
+    {
+        Snackbar.make(_loginBinding.root,"", Snackbar.LENGTH_SHORT).apply()
+        {
+            setAction(" ") {} // so the SnackBar creates the view otherwise it won't
+            val noConnectionWarning = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_action)
+            noConnectionWarning.text = getString(R.string.no_connection_message)
+            noConnectionWarning.width = _loginBinding.root.width
+            noConnectionWarning.textAlignment = View.TEXT_ALIGNMENT_CENTER
+            noConnectionWarning.setTextColor(
+                ContextCompat.getColor(context,
                     R.color.fromvpn_error_color
                 ))
-                noConnectionWarning.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_no_connection, 0, 0, 0)
-                show()
-                setBackgroundTint(
-                    ContextCompat.getColor(context,
+            noConnectionWarning.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_no_connection, 0, 0, 0)
+            show()
+            setBackgroundTint(
+                ContextCompat.getColor(context,
                     R.color.fromvpn_secondary_background_color
                 ))
-            }
-            MainActivity.hideKeyboard(context, this.requireView())
-
-            return false
         }
     }
 

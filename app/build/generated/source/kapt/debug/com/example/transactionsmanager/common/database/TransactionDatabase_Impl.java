@@ -38,17 +38,20 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
 
   private volatile CardDAO _cardDAO;
 
+  private volatile ControlFlowDAO _controlFlowDAO;
+
   @Override
   protected SupportSQLiteOpenHelper createOpenHelper(DatabaseConfiguration configuration) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(9) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(13) {
       @Override
       public void createAllTables(SupportSQLiteDatabase _db) {
-        _db.execSQL("CREATE TABLE IF NOT EXISTS `TransactionEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `sent` INTEGER NOT NULL, `transactionId` TEXT NOT NULL, `beneficiary` INTEGER NOT NULL, `amount` REAL NOT NULL, `phoneNumber` INTEGER)");
-        _db.execSQL("CREATE TABLE IF NOT EXISTS `ErrorEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `errorAddress` TEXT NOT NULL, `errorName` TEXT NOT NULL, `header` TEXT NOT NULL, `smsOrigin` TEXT NOT NULL)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `TransactionEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `sent` INTEGER NOT NULL, `transactionId` TEXT NOT NULL, `beneficiary` TEXT NOT NULL, `amount` REAL NOT NULL, `phoneNumber` TEXT)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `ErrorEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `errorAddress` TEXT NOT NULL, `errorName` TEXT NOT NULL, `header` TEXT NOT NULL, `smsOrigin` TEXT NOT NULL, `sent` INTEGER NOT NULL)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS `CredentialsEntity` (`id` INTEGER NOT NULL, `userName` TEXT NOT NULL, `token` TEXT NOT NULL, `logged` INTEGER NOT NULL, `instanceId` TEXT NOT NULL, `baseUrl` TEXT NOT NULL, PRIMARY KEY(`id`))");
         _db.execSQL("CREATE TABLE IF NOT EXISTS `CardEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cardNumber` INTEGER NOT NULL)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `ControlFlowEntity` (`id` INTEGER NOT NULL, `canUploadTransactions` INTEGER NOT NULL, `canUploadErrors` INTEGER NOT NULL, `canAssignAccounts` INTEGER NOT NULL, PRIMARY KEY(`id`))");
         _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cfdaac828559fa70743a223b8746a779')");
+        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'db1fa154933480ecf046006e2512b802')");
       }
 
       @Override
@@ -57,6 +60,7 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
         _db.execSQL("DROP TABLE IF EXISTS `ErrorEntity`");
         _db.execSQL("DROP TABLE IF EXISTS `CredentialsEntity`");
         _db.execSQL("DROP TABLE IF EXISTS `CardEntity`");
+        _db.execSQL("DROP TABLE IF EXISTS `ControlFlowEntity`");
         if (mCallbacks != null) {
           for (int _i = 0, _size = mCallbacks.size(); _i < _size; _i++) {
             mCallbacks.get(_i).onDestructiveMigration(_db);
@@ -100,9 +104,9 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
         _columnsTransactionEntity.put("date", new TableInfo.Column("date", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("sent", new TableInfo.Column("sent", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("transactionId", new TableInfo.Column("transactionId", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsTransactionEntity.put("beneficiary", new TableInfo.Column("beneficiary", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsTransactionEntity.put("beneficiary", new TableInfo.Column("beneficiary", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntity.put("amount", new TableInfo.Column("amount", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsTransactionEntity.put("phoneNumber", new TableInfo.Column("phoneNumber", "INTEGER", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsTransactionEntity.put("phoneNumber", new TableInfo.Column("phoneNumber", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysTransactionEntity = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesTransactionEntity = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoTransactionEntity = new TableInfo("TransactionEntity", _columnsTransactionEntity, _foreignKeysTransactionEntity, _indicesTransactionEntity);
@@ -112,13 +116,14 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
                   + " Expected:\n" + _infoTransactionEntity + "\n"
                   + " Found:\n" + _existingTransactionEntity);
         }
-        final HashMap<String, TableInfo.Column> _columnsErrorEntity = new HashMap<String, TableInfo.Column>(6);
+        final HashMap<String, TableInfo.Column> _columnsErrorEntity = new HashMap<String, TableInfo.Column>(7);
         _columnsErrorEntity.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsErrorEntity.put("date", new TableInfo.Column("date", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsErrorEntity.put("errorAddress", new TableInfo.Column("errorAddress", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsErrorEntity.put("errorName", new TableInfo.Column("errorName", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsErrorEntity.put("header", new TableInfo.Column("header", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsErrorEntity.put("smsOrigin", new TableInfo.Column("smsOrigin", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsErrorEntity.put("sent", new TableInfo.Column("sent", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysErrorEntity = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesErrorEntity = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoErrorEntity = new TableInfo("ErrorEntity", _columnsErrorEntity, _foreignKeysErrorEntity, _indicesErrorEntity);
@@ -156,9 +161,23 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
                   + " Expected:\n" + _infoCardEntity + "\n"
                   + " Found:\n" + _existingCardEntity);
         }
+        final HashMap<String, TableInfo.Column> _columnsControlFlowEntity = new HashMap<String, TableInfo.Column>(4);
+        _columnsControlFlowEntity.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsControlFlowEntity.put("canUploadTransactions", new TableInfo.Column("canUploadTransactions", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsControlFlowEntity.put("canUploadErrors", new TableInfo.Column("canUploadErrors", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsControlFlowEntity.put("canAssignAccounts", new TableInfo.Column("canAssignAccounts", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysControlFlowEntity = new HashSet<TableInfo.ForeignKey>(0);
+        final HashSet<TableInfo.Index> _indicesControlFlowEntity = new HashSet<TableInfo.Index>(0);
+        final TableInfo _infoControlFlowEntity = new TableInfo("ControlFlowEntity", _columnsControlFlowEntity, _foreignKeysControlFlowEntity, _indicesControlFlowEntity);
+        final TableInfo _existingControlFlowEntity = TableInfo.read(_db, "ControlFlowEntity");
+        if (! _infoControlFlowEntity.equals(_existingControlFlowEntity)) {
+          return new RoomOpenHelper.ValidationResult(false, "ControlFlowEntity(com.example.transactionsmanager.common.entities.ControlFlowEntity).\n"
+                  + " Expected:\n" + _infoControlFlowEntity + "\n"
+                  + " Found:\n" + _existingControlFlowEntity);
+        }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "cfdaac828559fa70743a223b8746a779", "0239e97d5cbe55e5260dcecc953928e8");
+    }, "db1fa154933480ecf046006e2512b802", "d341d7fae717d8031ed2056808adf855");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
         .name(configuration.name)
         .callback(_openCallback)
@@ -171,7 +190,7 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
   protected InvalidationTracker createInvalidationTracker() {
     final HashMap<String, String> _shadowTablesMap = new HashMap<String, String>(0);
     HashMap<String, Set<String>> _viewTables = new HashMap<String, Set<String>>(0);
-    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "TransactionEntity","ErrorEntity","CredentialsEntity","CardEntity");
+    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "TransactionEntity","ErrorEntity","CredentialsEntity","CardEntity","ControlFlowEntity");
   }
 
   @Override
@@ -184,6 +203,7 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
       _db.execSQL("DELETE FROM `ErrorEntity`");
       _db.execSQL("DELETE FROM `CredentialsEntity`");
       _db.execSQL("DELETE FROM `CardEntity`");
+      _db.execSQL("DELETE FROM `ControlFlowEntity`");
       super.setTransactionSuccessful();
     } finally {
       super.endTransaction();
@@ -201,6 +221,7 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
     _typeConvertersMap.put(ErrorDAO.class, ErrorDAO_Impl.getRequiredConverters());
     _typeConvertersMap.put(CredentialsDAO.class, CredentialsDAO_Impl.getRequiredConverters());
     _typeConvertersMap.put(CardDAO.class, CardDAO_Impl.getRequiredConverters());
+    _typeConvertersMap.put(ControlFlowDAO.class, ControlFlowDAO_Impl.getRequiredConverters());
     return _typeConvertersMap;
   }
 
@@ -268,6 +289,20 @@ public final class TransactionDatabase_Impl extends TransactionDatabase {
           _cardDAO = new CardDAO_Impl(this);
         }
         return _cardDAO;
+      }
+    }
+  }
+
+  @Override
+  public ControlFlowDAO ControlFlowDAO() {
+    if (_controlFlowDAO != null) {
+      return _controlFlowDAO;
+    } else {
+      synchronized(this) {
+        if(_controlFlowDAO == null) {
+          _controlFlowDAO = new ControlFlowDAO_Impl(this);
+        }
+        return _controlFlowDAO;
       }
     }
   }

@@ -37,7 +37,7 @@ class BootCompletedEventReciever : BroadcastReceiver()
     class SMSReaderService : Service()
     {
         private val serviceScope = CoroutineScope(Job())
-        private var smsCollectorTimer = TransactionApplication.createSmsCollectorTrigger()
+        private var smsCollectorTimer = TransactionApplication.createSmsCollectorTrigger(this)
 
         inner class SMSReciever: BroadcastReceiver()
         {

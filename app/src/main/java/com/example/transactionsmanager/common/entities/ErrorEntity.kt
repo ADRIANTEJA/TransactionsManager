@@ -9,4 +9,5 @@ data class ErrorEntity(@PrimaryKey(autoGenerate = true) var id: Int,
                         var errorAddress: String,
                         var errorName: String,
                         var header: String,
-                        var smsOrigin: String)
+                        var smsOrigin: String,
+                        var sent: Boolean)

@@ -11,4 +11,8 @@
     <string name="field_required_warning">Requerido</string>
     <string name="no_connection_message">Sin conexión</string>
     <string name="manage_accounts_button_text">Manage Accounts</string>
+    <string name="button1_title">Log out</string>
+    <string name="button2_title">Update cards</string>
+    <string name="button3_title">Upload Transactions</string>
+    <string name="event_busy_message">Esta tarea se encuentra en curso</string>
 </resources>

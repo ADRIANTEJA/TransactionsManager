@@ -12,6 +12,12 @@ interface ErrorDAO
     @Query("DELETE FROM ErrorEntity")
     fun deleteAll()
 
+    @Query("SELECT * FROM ErrorEntity WHERE sent = 0")
+    fun getUnsentErrors(): MutableList<ErrorEntity>
+
+    @Update
+    fun updateErrors(errors: MutableList<ErrorEntity>)
+
     @Insert
      fun addError(errorEntity: ErrorEntity)
 

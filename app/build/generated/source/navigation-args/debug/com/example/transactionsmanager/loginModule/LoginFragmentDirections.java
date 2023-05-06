@@ -10,7 +10,7 @@ public class LoginFragmentDirections {
   }
 
   @NonNull
-  public static NavDirections actionLoginFragmentToAccountsManagerFragment() {
-    return new ActionOnlyNavDirections(R.id.action_loginFragment_to_accountsManagerFragment);
+  public static NavDirections actionLoginFragmentToTransactionsListFragment() {
+    return new ActionOnlyNavDirections(R.id.action_loginFragment_to_transactionsListFragment);
   }
 }
