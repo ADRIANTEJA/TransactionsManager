@@ -6,21 +6,20 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
-import androidx.navigation.findNavController
-import androidx.work.BackoffPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.lifecycle.lifecycleScope
+import androidx.work.*
 import com.example.transactionsmanager.TransactionApplication
 import com.example.transactionsmanager.common.workers.AssignAccountWorker
 import com.example.transactionsmanager.databinding.ActivityMainBinding
-import com.example.transactionsmanager.transctionsListModule.TransactionsListFragmentDirections
 import com.example.transactionsmanager.transctionsListModule.receivers.BootCompletedEventReciever
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 open class MainActivity : AppCompatActivity()
@@ -42,17 +41,17 @@ open class MainActivity : AppCompatActivity()
         val intent = Intent(this, BootCompletedEventReciever.SMSReaderService::class.java)
         startService(intent)
 
-        //remember to check everything is fine with this
-        /*val assignAccountWorkRequest = PeriodicWorkRequestBuilder<AssignAccountWorker>(1, TimeUnit.HOURS)
-            .setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.MINUTES)
-            .build()
-
-        WorkManager.getInstance(this).enqueue(assignAccountWorkRequest)*/
-
-        val date = TransactionApplication.actualDate.time // this is an example of using date remove later
-        val dateFormat = SimpleDateFormat("dd/MM/yy h:m a", Locale.US)
-        val formattedDate = dateFormat.format(date)
-        println(formattedDate)
+        lifecycleScope.launch() // CHANGE THREADING
+        {
+            withContext(Dispatchers.IO)
+            {
+                if (TransactionApplication.database.CredentialsDAO().getLogged(1))
+                {
+                    //TransactionApplication.database.clearAllTables()
+                    //TransactionApplication.startAssignAccountWorker(applicationContext)
+                }
+            }
+        }
 
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)

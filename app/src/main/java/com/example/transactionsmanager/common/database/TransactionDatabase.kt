@@ -8,7 +8,8 @@ import com.example.transactionsmanager.common.entities.*
                       ErrorEntity::class,
                       CredentialsEntity::class,
                       CardEntity::class,
-                      ControlFlowEntity::class], version = 13)
+                      ControlFlowEntity::class], version = 15)
+
 abstract class TransactionDatabase : RoomDatabase()
 {
     abstract fun transactionDAO() : TransactionDAO

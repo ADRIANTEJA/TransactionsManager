@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\adria\\.gradle\\caches\\transforms-3\\79e97372552a1e3857cbdb9868641817\\transformed\\material-1.8.0\\res\\values-v23\\values-v23.xml",
+                    "source": "C:\\Users\\adria\\.gradle\\caches\\transforms-3\\32e24501ce244cd1fae6e2f41a8fdd95\\transformed\\material-1.9.0\\res\\values-v23\\values-v23.xml",
                     "from": {
                         "startLines": "2,5,8,13,17,20,23,26,31,34,38",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
@@ -42,7 +42,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\adria\\.gradle\\caches\\transforms-3\\e5497fb46190a3fb8ddd2af04092493d\\transformed\\work-runtime-2.8.0\\res\\values-v23\\values-v23.xml",
+                    "source": "C:\\Users\\adria\\.gradle\\caches\\transforms-3\\73f6937f388fcf6edd94795a68fd7ca6\\transformed\\work-runtime-2.8.1\\res\\values-v23\\values-v23.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",

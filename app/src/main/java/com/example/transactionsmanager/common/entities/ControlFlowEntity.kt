@@ -7,4 +7,5 @@ import androidx.room.PrimaryKey
 data class ControlFlowEntity(@PrimaryKey val id: Int,
                              val canUploadTransactions: Boolean = true,
                              val canUploadErrors: Boolean = true,
-                             val canAssignAccounts: Boolean = true)
+                             val canAssignAccounts: Boolean = true,
+                             val canProcessSMS: Boolean = true)

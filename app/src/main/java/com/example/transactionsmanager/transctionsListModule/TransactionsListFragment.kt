@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -39,7 +40,6 @@ open class TransactionsListFragment : Fragment()
     {
         override fun onReceive(context: Context?, intent: Intent?) { goToLogin(requireView()) }
     }
-
 
     companion object : TransactionsListFragment()
     {
@@ -106,7 +106,7 @@ open class TransactionsListFragment : Fragment()
         _transactionsListBinding.bottomMenu.setOnItemReselectedListener()
         {
             when(it.itemId)
-            {
+           {
                 R.id.log_out_button ->
                 {
                     lifecycleScope.launch()
@@ -124,9 +124,10 @@ open class TransactionsListFragment : Fragment()
                     {
                         withContext(Dispatchers.IO)
                         {
+                            Log.d("assign flow listener", TransactionApplication.database.ControlFlowDAO().getAssignAccountsControlFlow(1).toString())
                             if (TransactionApplication.database.ControlFlowDAO().getAssignAccountsControlFlow(1))
                             {
-                                TransactionApplication.assignAccounts(context)
+                                TransactionApplication.assignAccounts()
                             }
                             else { callEventBusyNotification() }
                         }

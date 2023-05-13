@@ -16,23 +16,6 @@ import kotlinx.coroutines.*
 
 class BootCompletedEventReciever : BroadcastReceiver()
 {
-    companion object
-    {
-        private fun makeNotification(string: String, context: Context)// this is not needed remember to delete on launch
-        {
-            val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            val notificationChannel = NotificationChannel("test1", "test2", NotificationManager.IMPORTANCE_DEFAULT)
-            notificationManager.createNotificationChannel(notificationChannel)
-
-            val notificationBuilder = NotificationCompat.Builder(context, "test1")
-                .setContentText(string)
-                .setContentTitle("jajaja")
-                .setSubText("jefbefb")
-                .setSmallIcon(R.drawable.ic_launcher_background)
-            notificationManager.notify(1234, notificationBuilder.build())
-        }
-    }
     // this gets the incoming sms, process and storages them in the database
     class SMSReaderService : Service()
     {
@@ -46,12 +29,13 @@ class BootCompletedEventReciever : BroadcastReceiver()
                 if (!intent?.action.equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) return
                 val extractMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
                 extractMessages.forEach { smsMessage ->
-                    makeNotification(smsMessage.displayMessageBody, applicationContext)// REMEMBER TO DELETE THIS
-                    serviceScope.launch()
+                    serviceScope.launch() // CHANGE THREADING
                     {
                         withContext(Dispatchers.IO)
                         {
-                            if (TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage)) != null)
+                            if (TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage)) != null &&
+                                TransactionApplication.database.CredentialsDAO().getLogged(1) &&
+                                TransactionApplication.database.ControlFlowDAO().getProcessSMSControlFlow(1))
                             {
                                 TransactionApplication.database.transactionDAO().addTransaction(TransactionApplication.processSMS(smsMessage, TransactionApplication.filterSMS(smsMessage))!!)
                                 smsCollectorTimer.cancel()

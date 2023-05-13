@@ -69,8 +69,25 @@ open class LoginFragment: Fragment()
             }
         }
 
-        lifecycleScope.launch { if (isLogged()) { goToTransactionsList(view) } }
-        _loginBinding.loginButton.setOnClickListener { /*goToTransactionsList(view)*/ login(view) }
+        lifecycleScope.launch()
+        {
+            if (isLogged())
+            {
+                //goToTransactionsList(view)
+            }
+        }
+        _loginBinding.loginButton.setOnClickListener()
+        {
+            try
+            {
+                /*goToTransactionsList(view)*/ login(view)
+            }
+            catch (e: Exception)
+            {
+                _loginBinding.errorLabel.text = "formato de url inválido"
+            }
+
+        }
     }
 
     private fun login(view: View)
@@ -89,7 +106,6 @@ open class LoginFragment: Fragment()
                 .baseUrl(NetworkingData.URL_BASE + address)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-
             val service = retrofit.create(NetworkingService::class.java)
 
             service.login(UserData(userName, password, deviceId)).enqueue(
@@ -105,45 +121,49 @@ open class LoginFragment: Fragment()
                                 {
                                     withContext(Dispatchers.IO)
                                     {
-                                        if(TransactionApplication.database.CredentialsDAO().getCredentials().isNotEmpty())
+                                        if (TransactionApplication.database.CredentialsDAO().getCredentials().isNotEmpty())
                                         {
                                             TransactionApplication.database.CredentialsDAO().updateCredentials(CredentialsEntity(1,
-                                                                                                                                userName,
-                                                                                                                                response.body()!!.token,
-                                                                                                                                true,
-                                                                                                                                deviceId,
-                                                                                                                                address))
-                                            Log.d("test", TransactionApplication.database.CredentialsDAO().getCredentials().toString())
+                                                                                                                                 userName,
+                                                                                                                                 response.body()!!.token,
+                                                                                                                                 true,
+                                                                                                                                  deviceId,
+                                                                                                                                  address))
+                                            Log.d("test", TransactionApplication.database.CredentialsDAO().getCredentials().toString())// remember to delete this
                                         }
                                         else
-                                        { TransactionApplication.database.CredentialsDAO().insertCredentials(CredentialsEntity(1,
-                                                                                                                               userName,
-                                                                                                                               response.body()!!.token,
-                                                                                                                               true,
-                                                                                                                               deviceId,
-                                                                                                                               address))
+                                        {
+                                            TransactionApplication.database.CredentialsDAO().insertCredentials(CredentialsEntity(1,
+                                                                                                                                 userName,
+                                                                                                                                 response.body()!!.token,
+                                                                                                                                 true,
+                                                                                                                                 deviceId,
+                                                                                                                                 address))
                                             Log.d("test", TransactionApplication.database.CredentialsDAO().getCredentials().toString())
                                         }
                                     }
                                 }
                                 goToTransactionsList(view)
+                                //TransactionApplication.startAssignAccountWorker(requireContext())
                             }
-                            in 401..403 -> { _loginBinding.errorLabel.text = "Credeciales incorrectas" }
-                            500 -> { _loginBinding.errorLabel.text = "Error interno en el servidor" }
-                            502 -> { _loginBinding.errorLabel.text = "Servicio no disponible" }
+                            in 401..403 -> _loginBinding.errorLabel.text = "Credeciales incorrectas"
+                            404 -> _loginBinding.errorLabel.text = "dirección incorrecta"
+                            500 -> _loginBinding.errorLabel.text = "Error interno en el servidor"
+                            502 -> _loginBinding.errorLabel.text = "Servicio no disponible"
                         }
                     }
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable)
                     {
                         when(t)
                         {
-                            is IOException -> _loginBinding.errorLabel.text = "Error de conexion o direccion incorrecta"
+                            is IOException -> _loginBinding.errorLabel.text = "Error de conexión o dirección incorrecta"
                             is HttpException -> _loginBinding.errorLabel.text = "Error en el servidor"
                         }
                     }
                 }
             )
-        } else { return }
+        }
+        else { return }
         return
     }
 

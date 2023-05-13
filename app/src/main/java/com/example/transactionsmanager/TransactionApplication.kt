@@ -7,12 +7,12 @@ import android.content.Intent
 import android.os.CountDownTimer
 import android.telephony.SmsMessage
 import android.util.Log
-import androidx.compose.ui.window.Dialog
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.room.OnConflictStrategy
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.work.*
 import com.example.transactionsmanager.common.database.TransactionDatabase
 import com.example.transactionsmanager.common.entities.CardEntity
 import com.example.transactionsmanager.common.entities.ErrorEntity
@@ -20,13 +20,15 @@ import com.example.transactionsmanager.common.entities.TransactionEntity
 import com.example.transactionsmanager.common.utils.*
 import com.example.transactionsmanager.common.utils.exceptions.InvalidSmsTypeException
 import com.example.transactionsmanager.common.utils.exceptions.SmsSizeChangedException
-import com.example.transactionsmanager.loginModule.model.retrofit.cardGetting.GetCardsResponse
+import com.example.transactionsmanager.common.workers.AssignAccountWorker
+import com.example.transactionsmanager.loginModule.model.retrofit.cardGetting.CardsRequestResponse
 import com.example.transactionsmanager.loginModule.model.retrofit.errorPosting.ErrorData
 import com.example.transactionsmanager.loginModule.model.retrofit.service.NetworkingData
 import com.example.transactionsmanager.loginModule.model.retrofit.service.NetworkingService
 import com.example.transactionsmanager.loginModule.model.retrofit.transactionPosting.TransactionData
 import com.example.transactionsmanager.loginModule.model.retrofit.transactionPosting.validTokenResponse.TokenData
 import kotlinx.coroutines.*
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
@@ -36,16 +38,23 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.lang.Exception
 import java.net.InetAddress
+import java.net.SocketTimeoutException
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class TransactionApplication : Application()
 {
     companion object
     {
         lateinit var database: TransactionDatabase
-        val actualDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Havana")) //this in milliseconds since 1994
+        private val actualDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Havana")) //this in milliseconds since 1994
         val timerScope = CoroutineScope(Job())
         private val applicationScope = CoroutineScope(SupervisorJob())
+        private val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .build()
 
         //this function filters the incoming sms so if it isn't from Transfermovil or not the kind of sms desired it will be ignored
         fun filterSMS(sms: SmsMessage): String
@@ -237,7 +246,7 @@ class TransactionApplication : Application()
             }
         }
 
-        suspend fun sendAndUpdateTransactions(context: Context)
+        suspend fun sendAndUpdateTransactions(context: Context) // remember
         {
             switchTransactionsControlFlow(false)
 
@@ -247,7 +256,13 @@ class TransactionApplication : Application()
 
                 when(makeTransactionsUploadRequest(convertTransactionsToUpload(unsentTransactions)))
                 {
-                    "401" ->
+                    "200" ->
+                    {
+                        unsentTransactions.forEach { it.sent = true }
+                        database.transactionDAO().updateTransactions(unsentTransactions)
+                    }
+
+                    "403" ->
                     {
                         while(true)
                         {
@@ -259,14 +274,14 @@ class TransactionApplication : Application()
                                     transactionApplication.sendIntent("go-back-to-login")
                                     break
                                 }
-                                "isValid" -> break
+                                "isValid" ->
+                                {
+                                    sendAndUpdateTransactions(context)
+                                    break
+                                }
+                                else -> delay(60000)
                             }
                         }
-                    }
-                    "403" ->
-                    {
-                        val transactionApplication = context as TransactionApplication
-                        transactionApplication.sendIntent("go-back-to-login")
                     }
 
                     else ->
@@ -275,9 +290,6 @@ class TransactionApplication : Application()
                         return
                     }
                 }
-
-                unsentTransactions.forEach{ it.sent = true }
-                database.transactionDAO().updateTransactions(unsentTransactions)
             }
             else { sendAndUpdateTransactions(context) }
 
@@ -290,36 +302,44 @@ class TransactionApplication : Application()
             return serverAddress.isReachable(3000)
         }
 
-        private fun makeTransactionsUploadRequest(convertedTransactions: MutableList<TransactionData>): String
+        @OptIn(ExperimentalCoroutinesApi::class)
+        private suspend fun makeTransactionsUploadRequest(convertedTransactions: MutableList<TransactionData>): String
         {
             var responseCode = "noResponse"
+
             val retrofit = Retrofit.Builder()
                 .baseUrl(NetworkingData.URL_BASE + database.CredentialsDAO().getBaseUrl(1))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             val service = retrofit.create(NetworkingService::class.java)
 
-            applicationScope.launch()
+            try
             {
-                withContext(Dispatchers.IO)
-                {
-                    service.uploadTransactions(convertedTransactions).enqueue(
+                val response = suspendCancellableCoroutine<Response<Void>>
+                { continuation ->
+                    service.uploadTransactions(convertedTransactions, database.CredentialsDAO().getToken(1)).enqueue(
                         object : Callback<Void>
                         {
                             override fun onResponse(call: Call<Void>, response: Response<Void>)
                             {
-                                when(response.code())
-                                {
-                                    401 -> responseCode = "401"
-                                    403 -> responseCode = "403"
-                                }
+                                continuation.resume(response) {}
                             }
 
-                            override fun onFailure(call: Call<Void>, t: Throwable) { }
+                            override fun onFailure(call: Call<Void>, t: Throwable)
+                            {
+                                continuation.resumeWith(Result.failure(t))
+                            }
                         }
                     )
                 }
+                when (response.code())
+                {
+                    200 -> responseCode = "200"
+                    403 -> responseCode = "403"
+                }
             }
+            catch (e: Exception) { Log.d("exception", e.message.toString()) }
+
             return responseCode
         }
 
@@ -347,84 +367,76 @@ class TransactionApplication : Application()
                 .joinToString("")
         }
 
-        suspend fun assignAccounts(context: Context): String
+        @OptIn(ExperimentalCoroutinesApi::class)
+        suspend fun assignAccounts(): String
         {
-            var responseStatus = "successful" // this variable is to control the success of the request(no connection errors etc) it doesn't matter if it takes back to login
-            applicationScope.launch()
+            var responseCode = "noResponse" // this variable is to control the success of the request(no connection errors etc) it doesn't matter if it takes back to login
+
+            val cards: MutableList<CardsRequestResponse>
+            val retrofit = Retrofit.Builder()
+                .baseUrl(NetworkingData.URL_BASE + database.CredentialsDAO().getBaseUrl(1))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            val service = retrofit.create(NetworkingService::class.java)
+
+            try
             {
-                withContext(Dispatchers.IO)
-                {
-                    var responseCode = "no Response"
-                    var cards = mutableListOf<String>()
-
-                    val retrofit = Retrofit.Builder()
-                        .baseUrl(NetworkingData.URL_BASE + database.CredentialsDAO().getBaseUrl(1))
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-
-                    val service = retrofit.create(NetworkingService::class.java)
-                    service.getCards().enqueue(
-                        object : Callback<GetCardsResponse>
+                val response = suspendCancellableCoroutine<Response<List<CardsRequestResponse>>>
+                { continuation ->
+                    service.getCards(database.CredentialsDAO().getToken(1)).enqueue(
+                        object: Callback<List<CardsRequestResponse>>
                         {
-                            override fun onResponse(call: Call<GetCardsResponse>, response: Response<GetCardsResponse>)
+                            override fun onResponse(call: Call<List<CardsRequestResponse>>, response: Response<List<CardsRequestResponse>>)
                             {
-                                when(response.code())
-                                {
-                                    200 ->
-                                    {
-                                        responseCode = "200"
-                                        cards = mutableListOf(*response.body()!!.cardsList.toTypedArray())
-                                    }
-                                    403 ->
-                                    {
-                                        responseCode = "403"
-                                        database.CredentialsDAO().updateLoggedState(1, false)
-                                    }
-                                    401 -> { responseCode = "401" }
-                                }
+                                continuation.resume(response) { }
                             }
 
-                            override fun onFailure(call: Call<GetCardsResponse>, t: Throwable)
+                            override fun onFailure(call: Call<List<CardsRequestResponse>>, t: Throwable)
                             {
-                                when(t)
-                                {
-                                    is IOException -> { responseStatus = "noInternetConnection"}
-                                    is HttpException -> { responseStatus = "serverError" }
-                                }
+                                continuation.resumeWith(Result.failure(t)) // JSON ARRAY PROBLEM
                             }
                         }
                     )
-
-                    when (responseCode)
+                }
+                Log.d("response Code", response.code().toString())
+                when(response.code())
+                {
+                    200 ->
                     {
-                        "200" ->
+                        Log.d("response", "successful")
+                        cards = response.body()?.toMutableList() ?: mutableListOf()
+                        for (i in cards.indices)
                         {
-                            for (i in cards.indices)
+                            val card = database.CardDAO().getByCardNumber(cards[i].cardNumber.toLong())
+                            if (card != null) { continue }
+                            else
                             {
-                                val card = database.CardDAO().getByCardNumber(cards[i].toLong())
-                                if (card != null) { continue }
-                                else
-                                {
-                                    database.CardDAO().deleteAllCards()
-                                    for (j in cards.indices) { database.CardDAO().addCard(CardEntity(0, cards[j].toLong())) }
-                                    break
-                                }
+                                database.CardDAO().deleteAllCards()
+                                for (j in cards.indices) { database.CardDAO().addCard(CardEntity(0, cards[j].cardNumber.toLong())) }
+                                break
                             }
                         }
-                        "403" ->
-                        {
-                            val transactionApplication = context.applicationContext as TransactionApplication
-                            transactionApplication.sendIntent("go-back-to-login")
-                        }
-                        "401" ->
-                        {
-                            if (tokenValidity() == "isNotValid") { responseStatus = "invalidToken" }
-                            else if (tokenValidity() == "notChecked") { responseStatus = "tokenNotChecked"}
-                        }
+                        responseCode = "successful"
+                    }
+                    403 ->
+                    {
+                        Log.d("response", "403")
+                        if (tokenValidity() == "isNotValid") { responseCode = "invalidToken" }
+                        else if (tokenValidity() == "notChecked") { responseCode = "tokenNotChecked" }
                     }
                 }
             }
-            return responseStatus
+            catch (e: Exception)
+            {
+                Log.d("Exception", e.message.toString())
+                when(e)
+                {
+                    is IOException -> { responseCode = "noInternetConnection"}
+                    is HttpException -> { responseCode = "serverError" }
+                }
+            }
+
+            return responseCode
         }
 
         private suspend fun tokenValidity(): String
@@ -437,31 +449,37 @@ class TransactionApplication : Application()
                     val retrofit = Retrofit.Builder()
                         .baseUrl(NetworkingData.URL_BASE + database.CredentialsDAO().getBaseUrl(1))
                         .addConverterFactory(GsonConverterFactory.create())
+                        .client(okHttpClient)
                         .build()
 
                     val service = retrofit.create(NetworkingService::class.java)
-                    service.validateToken(TokenData(database.CredentialsDAO().getToken(1))).enqueue(
-                        object : Callback<Void>
-                        {
-                            override fun onResponse(call: Call<Void>, response: Response<Void>)
-                            {
-                                when(response.code())
-                                {
-                                    200 -> { validity = "isValid" }
-                                    in 401..403 -> { database.CredentialsDAO().updateLoggedState(1, false) }
-                                }
-                            }
 
-                            override fun onFailure(call: Call<Void>, t: Throwable)
+                    try
+                    {
+                        service.validateToken(TokenData(database.CredentialsDAO().getToken(1))).enqueue(
+                            object : Callback<Void>
                             {
-                                when(t)
+                                override fun onResponse(call: Call<Void>, response: Response<Void>)
                                 {
-                                    is IOException -> validity = "notChecked"
-                                    is HttpException -> validity = "notChecked"
+                                    when(response.code())
+                                    {
+                                        200 -> { validity = "isValid" }
+                                        403 -> { database.CredentialsDAO().updateLoggedState(1, false) }
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<Void>, t: Throwable)
+                                {
+                                    when(t)
+                                    {
+                                        is IOException -> validity = "notChecked"
+                                        is HttpException -> validity = "notChecked"
+                                    }
                                 }
                             }
-                        }
-                    )
+                        )
+                    }
+                    catch (e: SocketTimeoutException) { validity = "notChecked" }
                 }
             }
             return validity
@@ -477,7 +495,13 @@ class TransactionApplication : Application()
 
                 when(makeErrorsUploadRequest(convertErrorsToUpload(unsentErrors)))
                 {
-                    "401" ->
+                    "200" ->
+                    {
+                        unsentErrors.forEach { it.sent = true }
+                        database.errorDAO().updateErrors(unsentErrors)
+                    }
+
+                    "403" ->
                     {
                         while(true)
                         {
@@ -489,14 +513,14 @@ class TransactionApplication : Application()
                                     transactionApplication.sendIntent("go-back-to-login")
                                     break
                                 }
-                                "isValid" ->  break
+                                "isValid" ->
+                                {
+                                    sendAndUpdateErrors(context)
+                                    break
+                                }
+                                else -> delay(60000)
                             }
                         }
-                    }
-                    "403" ->
-                    {
-                        val transactionApplication = context as TransactionApplication
-                        transactionApplication.sendIntent("go-back-to-login")
                     }
 
                     else ->
@@ -505,8 +529,7 @@ class TransactionApplication : Application()
                         return
                     }
                 }
-                unsentErrors.forEach { it.sent = true }
-                database.errorDAO().updateErrors(unsentErrors)
+
             }
             else { sendAndUpdateErrors(context) }
 
@@ -526,14 +549,14 @@ class TransactionApplication : Application()
             {
                 withContext(Dispatchers.IO)
                 {
-                    service.uploadErrors(convertedErrors).enqueue(
+                    service.uploadErrors(convertedErrors, database.CredentialsDAO().getToken(1)).enqueue(
                         object : Callback<Void>
                         {
                             override fun onResponse(call: Call<Void>, response: Response<Void>)
                             {
                                 when(response.code())
                                 {
-                                    401 -> responseCode = "401"
+                                    200 -> responseCode = "200"
                                     403 -> responseCode = "403"
                                 }
                             }
@@ -583,6 +606,29 @@ class TransactionApplication : Application()
                 }
             }
         }
+
+        fun startAssignAccountWorker(context: Context)
+        {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val assignOneTimeAccountWorkRequest = OneTimeWorkRequest.Builder(AssignAccountWorker::class.java)
+                .setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(context).enqueueUniqueWork("testWorker",
+                 ExistingWorkPolicy.KEEP,
+                 assignOneTimeAccountWorkRequest)
+
+            /*val assignPeriodicAccountWorkRequest = PeriodicWorkRequest.Builder(AssignAccountWorker::class.java, 15, TimeUnit.MINUTES)
+                .setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.MINUTES)
+                .build()
+
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork("assignAccountsWorker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                assignPeriodicAccountWorkRequest)*/
+        }
     }
 
     fun sendIntent(actionName: String)
@@ -606,11 +652,13 @@ class TransactionApplication : Application()
                         super.onCreate(db)
                         val defaultControlFlowEntity = ContentValues()
 
-                        defaultControlFlowEntity.apply()
+                        defaultControlFlowEntity.apply() //DataBAse issue
                         {
                             put("id", 1)
                             put("canUploadTransaction", true)
                             put("canUploadErrors", true)
+                            put("canAssignAccounts", true)
+                            put("canProcessSMS", false)
                         }
 
                         db.insert("ControlFlowEntity", OnConflictStrategy.IGNORE, defaultControlFlowEntity)
